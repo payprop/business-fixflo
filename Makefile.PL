@@ -19,6 +19,7 @@ WriteMakefile(
         'LWP::UserAgent'       => 6.00,
         'LWP::Protocol::https' => 6.00,
         'JSON'                 => 2.90,
+        'DateTime'             => 1.12,
     },
     TEST_REQUIRES => {
         'Test::Most'       => 0.31,
