@@ -12,6 +12,7 @@ there is nothing you should be doing with this.
 =cut
 
 use Moo;
+with 'Business::Fixflo::Utils';
 with 'Business::Fixflo::Version';
 
 use Business::Fixflo::Exception;
@@ -107,6 +108,9 @@ sub _api_request {
     my $ua = LWP::UserAgent->new;
     $ua->agent( $self->user_agent );
 
+    $path = $self->_add_query_params( $path,$params )
+        if $method eq 'GET';
+
     my $req = HTTP::Request->new(
         # passing through the absolute URL means we don't build it
         $method => $path =~ /^http/
@@ -144,10 +148,14 @@ sub _api_request {
     }
 }
 
-sub normalize_params {
-    my ( $self,$params ) = @_;
+sub _add_query_params {
+    my ( $self,$path,$params ) = @_;
 
-    return;
+    if ( my $query_params = $self->normalize_params( $params ) ) {
+        return "$path?$query_params";
+    }
+
+    return $path;
 }
 
 =head1 AUTHOR

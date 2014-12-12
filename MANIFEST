@@ -18,3 +18,4 @@ t/business/fixflo/exception.t
 t/business/fixflo/issue.t
 t/business/fixflo/paginator.t
 t/business/fixflo/resource.t
+t/business/fixflo/utils.t
