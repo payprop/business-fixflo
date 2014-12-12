@@ -49,6 +49,12 @@ cmp_deeply(
     'api_post'
 );
 
+cmp_deeply(
+    $Client->api_delete( 'Issue' ),
+    { Id => 1 },
+    'api_delete'
+);
+
 done_testing();
 
 # vim: ts=4:sw=4:et

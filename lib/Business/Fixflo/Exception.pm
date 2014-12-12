@@ -48,7 +48,7 @@ has message => (
             $@ && do { return "Failed to parse JSON response ($message): $@"; };
 
             if ( ref( $message ) eq 'HASH' ) {
-                my $error = delete( $message->{error} ) // "Unknown error";
+                my $error = delete( $message->{Message} ) // "Unknown error";
                 return ref( $error ) ? join( ', ',@{ $error } ) : $error;
             } else {
                 return join( ', ',@{ $message } );

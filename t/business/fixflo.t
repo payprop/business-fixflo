@@ -61,10 +61,25 @@ cmp_deeply(
 	'issues',
 );
 
+isa_ok(
+    my $Agencies = $Fixflo->agencies,
+    'Business::Fixflo::Paginator',
+);
+
+cmp_deeply(
+	$Agencies->objects,
+	[
+		map { Business::Fixflo::Agency->new(
+			client => $Fixflo->client,
+			url    => "url" . $_,
+		) } 1 .. 3,
+	],
+	'agencies',
+);
+
 *Business::Fixflo::Client::_api_request = sub {
 	return {
         'Id'        => 1,
-        'Firstname' => 'Lee',
 	}
 };
 
@@ -74,7 +89,13 @@ isa_ok(
 );
 
 is( $Issue->Id,1,'issue (Id)' );
-is( $Issue->Firstname,'Lee','issue (Firstname)' );
+
+isa_ok(
+    my $Agency = $Fixflo->agency( 1 ),
+    'Business::Fixflo::Agency',
+);
+
+is( $Agency->Id,1,'agency (Id)' );
 
 done_testing();
 

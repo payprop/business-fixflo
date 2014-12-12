@@ -18,6 +18,7 @@ with 'Business::Fixflo::Version';
 use Business::Fixflo::Exception;
 use Business::Fixflo::Paginator;
 use Business::Fixflo::Issue;
+use Business::Fixflo::Agency;
 
 use Carp qw/ confess /;
 use MIME::Base64 qw/ encode_base64 /;
@@ -79,12 +80,45 @@ sub _get_issues {
     return $Paginator;
 }
 
+sub _get_agencies {
+    my ( $self,$params ) = @_;
+    my $agencies = $self->_api_request( 'GET','Agencies' );
+
+    my $Paginator = Business::Fixflo::Paginator->new(
+        links  => {
+            next     => $agencies->{NextURL},
+            previous => $agencies->{PreviousURL},
+        },
+        client  => $self,
+        class   => 'Business::Fixflo::Agency',
+        objects => [ map { Business::Fixflo::Agency->new(
+            client => $self,
+            url    => $_,
+        ) } @{ $agencies->{Items} } ],
+    );
+
+    return $Paginator;
+}
+
 sub _get_issue {
     my ( $self,$id ) = @_;
 
     my $data = $self->_api_request( 'GET',"Issue/$id" );
 
     my $issue = Business::Fixflo::Issue->new(
+        client => $self,
+        %{ $data },
+    );
+
+    return $issue;
+}
+
+sub _get_agency {
+    my ( $self,$id ) = @_;
+
+    my $data = $self->_api_request( 'GET',"Agency/$id" );
+
+    my $issue = Business::Fixflo::Agency->new(
         client => $self,
         %{ $data },
     );
@@ -100,6 +134,11 @@ sub api_get {
 sub api_post {
     my ( $self,$path,$params ) = @_;
     return $self->_api_request( 'POST',$path,$params );
+}
+
+sub api_delete {
+    my ( $self,$path,$params ) = @_;
+    return $self->_api_request( 'DELETE',$path,$params );
 }
 
 sub _api_request {

@@ -92,9 +92,19 @@ sub issues {
     return $self->client->_get_issues( \%params );
 }
 
+sub agencies {
+    my ( $self,%params ) = @_;
+    return $self->client->_get_agencies( \%params );
+}
+
 sub issue {
     my ( $self,$id ) = @_;
     return $self->client->_get_issue( $id );
+}
+
+sub agency {
+    my ( $self,$id ) = @_;
+    return $self->client->_get_agency( $id );
 }
 
 =head1 SEE ALSO
@@ -102,6 +112,8 @@ sub issue {
 L<Business::Fixflo::Client>
 
 L<Business::Fixflo::Issue>
+
+L<Business::Fixflo::Agency>
 
 =head1 AUTHOR
 

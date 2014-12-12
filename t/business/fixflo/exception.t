@@ -34,7 +34,7 @@ note( "JSON coercion" );
 
 throws_ok(
     sub { Business::Fixflo::Exception->throw(
-        message => '{"error":["The resource has already been confirmed"]}',
+        message => '{"Message":["The resource has already been confirmed"]}',
     ) },
     'Business::Fixflo::Exception',
     '->throw with message (JSON Fixflo error response)',
@@ -48,7 +48,7 @@ is(
 
 throws_ok(
     sub { Business::Fixflo::Exception->throw(
-        message => '{"error":"The resource has already been confirmed"}',
+        message => '{"Message":"The resource has already been confirmed"}',
     ) },
     'Business::Fixflo::Exception',
     '->throw with message (JSON custom error response)',
