@@ -63,8 +63,9 @@ use Business::Fixflo::Client;
 
 =cut
 
-has [ qw/ username password / ] => (
+has [ qw/ username password custom_domain / ] => (
     is       => 'ro',
+    required => 1,
 );
 
 has client => (
@@ -79,11 +80,22 @@ has client => (
         my ( $self ) = @_;
 
         return Business::Fixflo::Client->new(
-            username => $self->username,
-            password => $self->password,
+            username      => $self->username,
+            password      => $self->password,
+            custom_domain => $self->custom_domain,
         );
     },
 );
+
+sub issues {
+    my ( $self,%params ) = @_;
+    return $self->client->_get_issues( \%params );
+}
+
+sub issue {
+    my ( $self,$id ) = @_;
+    return $self->client->_get_issue( $id );
+}
 
 =head1 SEE ALSO
 

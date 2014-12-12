@@ -12,13 +12,13 @@ there is nothing you should be doing with this.
 =cut
 
 use Moo;
-with 'Business::Fixflo::Utils';
 with 'Business::Fixflo::Version';
 
 use Business::Fixflo::Exception;
+use Business::Fixflo::Paginator;
+use Business::Fixflo::Issue;
 
 use Carp qw/ confess /;
-use POSIX qw/ strftime /;
 use MIME::Base64 qw/ encode_base64 /;
 use LWP::UserAgent;
 use JSON ();
@@ -27,9 +27,79 @@ use JSON ();
 
 =cut
 
-has [ qw/ username password / ] => (
+has [ qw/ username password custom_domain / ] => (
     is       => 'ro',
+    required => 1,
 );
+
+has user_agent => (
+    is      => 'ro',
+    default => sub {
+        # probably want more infoin here, version of perl, platform, and such
+        return "business-fixflo/perl/v" . $Business::Fixflo::VERSION;
+    }
+);
+
+has 'base_url' => (
+    is       => 'ro',
+    required => 0,
+    lazy     => 1,
+    default  => sub {
+        my ( $self ) = @_;
+        return $ENV{FIXFLO_URL}
+            ? $ENV{FIXFLO_URL}
+            : 'https://' . $self->custom_domain . '.fixflo.com';
+    }
+);
+
+has api_path => (
+    is       => 'ro',
+    required => 0,
+    default  => sub { '/api/' . $Business::Fixflo::API_VERSION },
+);
+
+sub _get_issues {
+    my ( $self,$params ) = @_;
+    my $issues = $self->_api_request( 'GET','Issues' );
+
+    my $Paginator = Business::Fixflo::Paginator->new(
+        links  => {
+            next     => $issues->{NextURL},
+            previous => $issues->{PreviousURL},
+        },
+        client  => $self,
+        class   => 'Business::Fixflo::Issue',
+        objects => [ map { Business::Fixflo::Issue->new(
+            client => $self,
+            url    => $_,
+        ) } @{ $issues->{Items} } ],
+    );
+
+    return $Paginator;
+}
+
+sub _get_issue {
+    my ( $self,$id ) = @_;
+
+    my $data = $self->_api_request( 'GET',"Issue/$id" );
+
+    my $issue = Business::Fixflo::Issue->new(
+        client => $self,
+        %{ $data },
+    );
+
+    return $issue;
+}
+
+sub api_get {
+    my ( $self,$path,$params ) = @_;
+    return $self->_api_request( 'GET',$path,$params );
+}
+
+sub api_post {
+    my ( $self,$path,$params ) = @_;
+    return $self->_api_request( 'POST',$path,$params );
+}
 
 sub _api_request {
     my ( $self,$method,$path,$params ) = @_;
@@ -40,7 +110,7 @@ sub _api_request {
     my $req = HTTP::Request->new(
         # passing through the absolute URL means we don't build it
         $method => $path =~ /^http/
-            ? $path : join( '/',$self->base_url . $self->api_path . $path ),
+            ? $path : join( '/',$self->base_url . $self->api_path,$path ),
     );
 
     $req->header( 'Authorization' =>
@@ -57,10 +127,13 @@ sub _api_request {
     my $res = $ua->request( $req );
 
     if ( $res->is_success ) {
-        my $data  = JSON->new->decode( $res->content );
-        my $links = $res->header( 'link' );
-        my $info  = $res->header( 'x-pagination' );
-        return wantarray ? ( $data,$links,$info ) : $data;
+        my $data = $res->content;
+
+        if ( $res->headers->header( 'content-type' ) =~ m!application/json! ) {
+            $data = JSON->new->decode( $data );
+        }
+
+        return $data;
     }
     else {
         Business::Fixflo::Exception->throw({
@@ -69,6 +142,12 @@ sub _api_request {
             response => $res->status_line,
         });
     }
+}
+
+sub normalize_params {
+    my ( $self,$params ) = @_;
+
+    return;
 }
 
 =head1 AUTHOR
