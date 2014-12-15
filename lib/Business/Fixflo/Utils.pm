@@ -12,10 +12,13 @@ A role containing Fixflo utilities.
 
 use Moo::Role;
 
+=head1 METHODS
+
 =head2 normalize_params
 
 Normalizes the passed params hash into a string for use in queries to the
-fixflo API. Includes RFC5849 encoding
+fixflo API. Includes RFC5849 encoding and will convert DateTime objects
+into the corresponding ISO8601 string
 
     my $query_string = $self->normalize_params( \%params );
 

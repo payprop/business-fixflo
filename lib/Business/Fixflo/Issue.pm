@@ -14,34 +14,73 @@ use Moo;
 
 extends 'Business::Fixflo::Resource';
 
-has [ qw/
-	CallbackId
-	FaultTitle
-	TermsAccepted
-	TenantNotes
+=head1 ATTRIBUTES
+
 	Address
-	Id
-	Firstname
-	EmailAddress
+	CallbackId
+	ContactNumber
+	Created
 	DirectEmailAddress
 	DirectMobileNumber
-	TenantId
-	TenantPresenceRequested
-	TenantAcceptComplete
-	Salutation
-	Surname
-	Title
-	Status
+	EmailAddress
 	FaultCategory
-	Media
-	FaultPriority
-	Created
 	FaultNotes
-	ContactNumber
+	FaultPriority
+	FaultTitle
+	Firstname
+	Id
+	Media
+	Salutation
+	Status
 	StatusChanged
+	Surname
+	TenantAcceptComplete
+	TenantId
+	TenantNotes
+	TenantPresenceRequested
+	TermsAccepted
+	Title
+
+=cut
+
+has [ qw/
+	Address
+	CallbackId
+	ContactNumber
+	Created
+	DirectEmailAddress
+	DirectMobileNumber
+	EmailAddress
+	FaultCategory
+	FaultNotes
+	FaultPriority
+	FaultTitle
+	Firstname
+	Id
+	Media
+	Salutation
+	Status
+	StatusChanged
+	Surname
+	TenantAcceptComplete
+	TenantId
+	TenantNotes
+	TenantPresenceRequested
+	TermsAccepted
+	Title
 / ] => (
     is => 'rw',
 );
+
+=head1 Operations on an issue
+
+=head2 report
+
+Returns the report content (binary, pdf)
+
+    my $pdf_report = $issue->report;
+
+=cut
 
 sub report {
 	my ( $self ) = @_;

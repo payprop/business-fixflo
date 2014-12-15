@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 =head1 VERSION
 
-0.01
+0.01_01
 
 =head1 DESCRIPTION
 
@@ -24,7 +24,42 @@ B<with this perldoc>, as the official API documentation explains in more depth
 some of the functionality including required / optional parameters for certain
 methods.
 
+Please note this library is a work in progress
+
 =head1 SYNOPSIS
+
+    # agency API:
+    my $ff = Business::Fixflo->new(
+        username      => $username,
+        password      => $password,
+        custom_domain => $domain,
+    );
+
+    my $issues   = $ff->issues,
+    my $agencies = $ff->agencies,
+
+    while ( my @issues = $issues->next ) {
+        foreach my $issue ( @issues ) {
+            ...
+        }
+    }
+
+    my $issue = $ff->issue( $id );
+    my $json  = $issue->to_json;
+
+    # third party API:
+    my $ff = Business::Fixflo->new(
+        username      => $third_party_username,
+        password      => $third_party_password,
+    );
+
+    my $agency = Business::Fixflo::Agency->new(
+        client     => $ff->client,
+        AgencyName => 'foo',
+    );
+
+    $agency->create;
+    $agency->delete;
 
 =head1 ERROR HANDLING
 
@@ -35,6 +70,7 @@ appropriate error catching code (TryCatch in the below example):
     use TryCatch;
 
     try {
+        ...
     }
     catch ( Business::Fixflo::Exception $e ) {
         # error specific to Business::Fixflo
@@ -48,8 +84,6 @@ appropriate error catching code (TryCatch in the below example):
         ...
     }
 
-=head1 PAGINATION
-
 =cut
 
 use Moo;
@@ -60,6 +94,28 @@ use Carp qw/ confess /;
 use Business::Fixflo::Client;
 
 =head1 ATTRIBUTES
+
+=head2 username
+
+Your Fixflo username
+
+=head2 password
+
+Your Fixflo password
+
+=head2 custom_domain
+
+Your Fixflo custom domain, defaults to "api" (which will in fact call
+the third party Fixflo API)
+
+=head2 url_suffix
+
+The url suffix to use after the custom domain, defaults to fixflo.com
+
+=head2 client
+
+A Business::Fixflo::Client object, this will be constructed for you so
+you shouldn't need to pass this
 
 =cut
 
@@ -104,6 +160,37 @@ has client => (
     },
 );
 
+=head1 METHODS
+
+    issues
+    agencies
+    issue
+    agency
+
+Get a [list of] issue(s) / agenc(y|ies):
+
+    my $paginator = $ff->issues( %query_params );
+
+    my $issue     = $ff->issue( $id );
+
+Will return a L<Business::Fixflo::Paginator> object (when calling endpoints
+that return lists of items) or a Business::Fixflo:: object for the Issue,
+Agency, etc.
+
+%query_params refers to the possible query params as shown in the currency
+Fixflo API documentation. For example: page=[n]. You can pass DateTime objects
+through and these will be correctly changed into strings when calling the API:
+
+    # issues raised in the previous month
+    my $paginator = $ff->issues(
+        CreatedSince  => DateTime->now->subtract( months => 1 ),
+    );
+
+Refer to the L<Business::Fixflo::Paginator> documentation for what to do with
+the returned paginator object.
+
+=cut
+
 sub issues {
     my ( $self,%params ) = @_;
     return $self->client->_get_issues( \%params );
@@ -131,6 +218,10 @@ L<Business::Fixflo::Client>
 L<Business::Fixflo::Issue>
 
 L<Business::Fixflo::Agency>
+
+L<Business::Fixflo::Paginator>
+
+L<http://www.fixflo.com/Tech/Api/V2/Urls>
 
 =head1 AUTHOR
 

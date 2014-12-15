@@ -11,7 +11,7 @@ with 'Business::Fixflo::Utils';
 package main;
 
 use Test::Most;
-use DateTime;
+use DateTime::Tiny;
 
 use Business::Fixflo::Utils;
 
@@ -35,7 +35,7 @@ is(
 
 $params = {
     page         => 1,
-	CreatedSince => DateTime->new(
+	CreatedSince => DateTime::Tiny->new(
 		year   => 2001,
 		month  => 1,
 		day    => 1,

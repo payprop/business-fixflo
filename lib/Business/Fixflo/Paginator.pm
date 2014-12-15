@@ -1,13 +1,55 @@
 package Business::Fixflo::Paginator;
 
+=head1 NAME
+
+Business::Fixflo::Paginator
+
+=head1 DESCRIPTION
+
+A class for pagination through fixflo data returned as a list.
+
+=cut
+
 use Moo;
 use JSON ();
 
 use Business::Fixflo::Issue;
 
+=head1 ATTRIBUTES
+
+    client
+    objects
+    class
+    links
+
+=cut
+
 has [ qw/ client objects class links / ] => (
     is => 'rw'
 );
+
+=head1 PAGER METHODS
+
+    next
+    previous
+
+Return the current set of objects and then gets the next/previous page:
+
+    my @objects = $Paginator->next;
+
+=head2 objects
+
+Gets the current set of objects
+
+    my @objects = $Paginator->objects;
+
+=head2 links
+
+Returns a hash that has the NextURL and previousURL within
+
+    my $urls = $Paginator->links
+
+=cut
 
 sub next {
     my ( $self ) = @_;
@@ -53,6 +95,18 @@ sub _objects_from_page {
 
     return [];
 }
+
+=head1 AUTHOR
+
+Lee Johnson - C<leejo@cpan.org>
+
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. If you would like to contribute documentation,
+features, bug fixes, or anything else then please raise an issue / pull request:
+
+    https://github.com/leejo/business-fixflo
+
+=cut
 
 1;
 

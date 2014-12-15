@@ -24,9 +24,42 @@ use Carp qw/ confess /;
 use MIME::Base64 qw/ encode_base64 /;
 use LWP::UserAgent;
 use JSON ();
-use Data::Dumper;
 
 =head1 ATTRIBUTES
+
+=head2 username
+
+Your Fixflo username
+
+=head2 password
+
+Your Fixflo password
+
+=head2 custom_domain
+
+Your Fixflo custom domain
+
+=head2 user_agent
+
+The user agent string used in requests to the Fixflo API, defaults to
+business-fixflo/perl/v . $version_of_this_library.
+
+=head2 url_suffix
+
+The url suffix to use after the custom domain, defaults to fixflo.com
+
+=head2 base_url
+
+The full url to use in calling the Fixflo API, defaults to:
+
+    value of $ENV{FIXFLO_URL}
+    or https:// $self->custom_domain . $self->url_suffix
+
+=head2 api_path
+
+The version of the Fixflo API to use, defaults to:
+
+    /api/$Business::Fixflo::API_VERSION
 
 =cut
 
@@ -133,6 +166,22 @@ sub _get_agency {
     return $issue;
 }
 
+=head1 METHODS
+
+    api_get
+    api_post
+    api_delete
+
+Make a request to the Fixflo API:
+
+    my $data = $Client->api_get( 'Issues',\%params );
+
+May return a L<Business::Fixflo::Paginator> object (when calling endpoints
+that return lists of items) or a Business::Fixflo:: object for the Issue,
+Agency, etc.
+
+=cut
+
 sub api_get {
     my ( $self,$path,$params ) = @_;
     return $self->_api_request( 'GET',$path,$params );
@@ -190,14 +239,6 @@ sub _api_request {
     }
     else {
 
-        if ( $ENV{FIXFLO_DEV_TESTING} ) {
-            warn Dumper $path;
-            warn Dumper join( '/',$self->base_url . $self->api_path,$path );
-            warn Dumper $res->content;
-            warn Dumper $res->status_line;
-            warn Dumper $params;
-        }
-
         Business::Fixflo::Exception->throw({
             message  => $res->content,
             code     => $res->code,
@@ -215,6 +256,18 @@ sub _add_query_params {
 
     return $path;
 }
+
+=head1 AUTHOR
+
+Lee Johnson - C<leejo@cpan.org>
+
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. If you would like to contribute documentation,
+features, bug fixes, or anything else then please raise an issue / pull request:
+
+    https://github.com/leejo/business-fixflo
+
+=cut
 
 =head1 AUTHOR
 

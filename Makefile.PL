@@ -19,8 +19,6 @@ WriteMakefile(
         'LWP::UserAgent'       => 6.00,
         'LWP::Protocol::https' => 6.00,
         'JSON'                 => 2.90,
-        'DateTime'             => 1.12,
-        'Data::Dumper'         => 0, # Data::Dumper was first released with perl 5.005
     },
     TEST_REQUIRES => {
         'Test::Most'       => 0.31,
@@ -28,6 +26,7 @@ WriteMakefile(
         'Test::Exception'  => 0.32,
         'Test::MockObject' => 1.20140408,
         'Try::Tiny'        => 0.22,
+        'DateTime::Tiny'   => 1.04,
     },
     META_MERGE => {
         resources => {

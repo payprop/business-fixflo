@@ -15,6 +15,13 @@ use Moo;
 use Carp qw/ confess /;
 use JSON ();
 
+=head1 ATTRIBUTES
+
+    client
+    url
+
+=cut
+
 has client => (
     is       => 'ro',
     isa      => sub {
@@ -37,6 +44,22 @@ has [ qw/ url / ] => (
 		);
 	},
 );
+
+=head1 METHODS
+
+=head2 to_hash
+
+Returns a hash representation of the object.
+
+    my %data = $Issue->to_hash;
+
+=head2 to_json
+
+Returns a json string representation of the object.
+
+    my $json = $Issue->to_json;
+
+=cut
 
 sub to_hash {
     my ( $self ) = @_;
@@ -62,6 +85,18 @@ sub get {
 
 	return $self;
 }
+
+=head1 AUTHOR
+
+Lee Johnson - C<leejo@cpan.org>
+
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. If you would like to contribute documentation,
+features, bug fixes, or anything else then please raise an issue / pull request:
+
+    https://github.com/leejo/business-fixflo
+
+=cut
 
 1;
 

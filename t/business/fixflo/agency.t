@@ -50,8 +50,47 @@ no warnings 'redefine';
 *Business::Fixflo::Client::api_post   = sub { 'updated' };
 *Business::Fixflo::Client::api_delete = sub { 'deleted' };
 
-is( $Agency->create,'updated','create' );
+is( $Agency->update,'updated','update' );
 is( $Agency->delete,'deleted','delete' );
+
+throws_ok(
+    sub { $Agency->create },
+    'Business::Fixflo::Exception',
+    '->create throws when Id is set'
+);
+
+like(
+    $@->message,
+    qr/Can't create Agency when Id is already set/,
+    ' ... with expected message'
+);
+
+delete( $Agency->{Id} );
+is( $Agency->create,'updated','create' );
+
+throws_ok(
+    sub { $Agency->update },
+    'Business::Fixflo::Exception',
+    '->update throws when Id is not set'
+);
+
+like(
+    $@->message,
+    qr/Can't update Agency if Id is not set/,
+    ' ... with expected message'
+);
+
+throws_ok(
+    sub { $Agency->delete },
+    'Business::Fixflo::Exception',
+    '->delete throws when Id is not set'
+);
+
+like(
+    $@->message,
+    qr/Can't delete Agency if Id is not set/,
+    ' ... with expected message'
+);
 
 done_testing();
 
