@@ -24,6 +24,7 @@ use Carp qw/ confess /;
 use MIME::Base64 qw/ encode_base64 /;
 use LWP::UserAgent;
 use JSON ();
+use Data::Dumper;
 
 =head1 ATTRIBUTES
 
@@ -42,6 +43,12 @@ has user_agent => (
     }
 );
 
+has url_suffix => (
+    is       => 'ro',
+    required => 0,
+    default  => sub { 'fixflo.com' },
+);
+
 has 'base_url' => (
     is       => 'ro',
     required => 0,
@@ -50,7 +57,7 @@ has 'base_url' => (
         my ( $self ) = @_;
         return $ENV{FIXFLO_URL}
             ? $ENV{FIXFLO_URL}
-            : 'https://' . $self->custom_domain . '.fixflo.com';
+            : 'https://' . $self->custom_domain . '.' . $self->url_suffix;
     }
 );
 
@@ -163,8 +170,8 @@ sub _api_request {
     $req->header( 'Accept' => 'application/json' );
 
     if ( $method =~ /POST|PUT/ ) {
-      $req->content_type( 'application/x-www-form-urlencoded' );
-      $req->content( $self->normalize_params( $params ) );
+      $req->content_type( 'application/json' );
+      $req->content( JSON->new->encode( $params ) );
     }
 
     my $res = $ua->request( $req );
@@ -179,6 +186,14 @@ sub _api_request {
         return $data;
     }
     else {
+
+        if ( $ENV{FIXFLO_DEV_TESTING} ) {
+            warn Dumper $path;
+            warn Dumper join( '/',$self->base_url . $self->api_path,$path );
+            warn Dumper $res->content;
+            warn Dumper $res->status_line;
+        }
+
         Business::Fixflo::Exception->throw({
             message  => $res->content,
             code     => $res->code,

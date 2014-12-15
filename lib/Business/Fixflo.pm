@@ -63,9 +63,21 @@ use Business::Fixflo::Client;
 
 =cut
 
-has [ qw/ username password custom_domain / ] => (
+has [ qw/ username password / ] => (
     is       => 'ro',
     required => 1,
+);
+
+has custom_domain => (
+    is       => 'ro',
+    required => 0,
+    default  => sub { 'api' },
+);
+
+has url_suffix => (
+    is       => 'ro',
+    required => 0,
+    default  => sub { 'fixflo.com' },
 );
 
 has client => (
@@ -79,10 +91,15 @@ has client => (
     default  => sub {
         my ( $self ) = @_;
 
+        if ( $self->url_suffix =~ /test/ ) {
+            $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
+        }
+
         return Business::Fixflo::Client->new(
             username      => $self->username,
             password      => $self->password,
             custom_domain => $self->custom_domain,
+            url_suffix    => $self->url_suffix,
         );
     },
 );

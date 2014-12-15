@@ -20,6 +20,7 @@ WriteMakefile(
         'LWP::Protocol::https' => 6.00,
         'JSON'                 => 2.90,
         'DateTime'             => 1.12,
+        'Data::Dumper'         => 0, # Data::Dumper was first released with perl 5.005
     },
     TEST_REQUIRES => {
         'Test::Most'       => 0.31,
