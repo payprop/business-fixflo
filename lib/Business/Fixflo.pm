@@ -91,7 +91,7 @@ has client => (
     default  => sub {
         my ( $self ) = @_;
 
-        if ( $self->url_suffix =~ /test/ ) {
+        if ( $self->url_suffix =~ /\Qtest.fixflo.com\E/ ) {
             $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
         }
 

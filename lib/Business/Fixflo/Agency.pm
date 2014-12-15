@@ -30,20 +30,12 @@ has [ qw/
 
 sub create {
     my ( $self ) = @_;
-
-    my %params = map { $_ => $self->$_ }
-        qw/ Id AgencyName CustomDomain EmailAddress /;
-
-    return $self->client->api_post( \%params );
+    return $self->client->api_post( 'Agency',{ $self->to_hash } );
 }
 
 sub delete {
     my ( $self ) = @_;
-
-    my %params = map { $_ => $self->$_ }
-        qw/ Id AgencyName CustomDomain EmailAddress /;
-
-    return $self->client->api_delete( \%params );
+    return $self->client->api_delete( 'Agency',{ $self->to_hash } );
 }
 
 1;

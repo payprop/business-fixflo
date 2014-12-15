@@ -38,7 +38,7 @@ has [ qw/ username password custom_domain / ] => (
 has user_agent => (
     is      => 'ro',
     default => sub {
-        # probably want more infoin here, version of perl, platform, and such
+        # probably want more info in here, version of perl, platform, and such
         return "business-fixflo/perl/v" . $Business::Fixflo::VERSION;
     }
 );
@@ -167,11 +167,14 @@ sub _api_request {
         "basic "
         . encode_base64( join( ":",$self->username,$self->password ) )
     );
+
     $req->header( 'Accept' => 'application/json' );
 
     if ( $method =~ /POST|PUT/ ) {
-      $req->content_type( 'application/json' );
-      $req->content( JSON->new->encode( $params ) );
+        if ( $params ) {
+            $req->content_type( 'application/json' );
+            $req->content( JSON->new->encode( $params ) )
+        }
     }
 
     my $res = $ua->request( $req );
@@ -192,6 +195,7 @@ sub _api_request {
             warn Dumper join( '/',$self->base_url . $self->api_path,$path );
             warn Dumper $res->content;
             warn Dumper $res->status_line;
+            warn Dumper $params;
         }
 
         Business::Fixflo::Exception->throw({
