@@ -91,7 +91,7 @@ sub _parse_envelope_data {
         %{ $data }
     );
 
-	foreach my $attr ( keys( %{ $Envelope->Entity } ) ) {
+	foreach my $attr ( keys( %{ $Envelope->Entity // {} } ) ) {
 		$self->$attr( $Envelope->Entity->{$attr} );
 	}
 
@@ -112,9 +112,13 @@ sub delete {
         });
     }
 
-    return $self->_parse_envelope_data(
-        $self->client->api_delete( 'Agency',{ $self->to_hash } )
+    $self->_parse_envelope_data(
+        $self->client->api_delete( $self->url,{ $self->to_hash } )
     );
+
+    $self->IsDeleted( 1 );
+
+    return $self;
 }
 
 =head1 AUTHOR

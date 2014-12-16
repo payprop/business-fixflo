@@ -219,7 +219,7 @@ sub _api_request {
 
     $req->header( 'Accept' => 'application/json' );
 
-    if ( $method =~ /POST|PUT/ ) {
+    if ( $method =~ /POST|PUT|DELETE/ ) {
         if ( $params ) {
             $req->content_type( 'application/json' );
             $req->content( JSON->new->encode( $params ) )

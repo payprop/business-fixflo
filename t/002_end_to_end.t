@@ -93,6 +93,7 @@ cmp_deeply(
             FaultTitle
             Firstname
             Id
+            Media
             Salutation
             Status
             StatusChanged
@@ -106,10 +107,6 @@ cmp_deeply(
             client
             url
         / ),
-       'Media' => supersetof( {
-            'ContentType' => ignore(),
-            'URL'         => ignore(),
-        } ),
         },'Business::Fixflo::Issue'
     ),
     '->issue'
@@ -214,10 +211,9 @@ cmp_deeply(
     '->agency',
 );
 
-note explain $agency;
-
 ok( $agency->delete,'->delete' );
+is( $agency->IsDeleted,1,'IsDeleted' );
 
-note explain $agency;
+done_testing();
 
 # vim: ts=4:sw=4:et
