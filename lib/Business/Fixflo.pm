@@ -11,12 +11,12 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 =head1 VERSION
 
-0.01_02
+0.01
 
 =head1 DESCRIPTION
 
 Business::Fixflo is a library for easy interface to the fixflo property
-repair service, it implements most of the functionality currently found
+repair service, it implements all of the functionality currently found
 in the service's API documentation: http://www.fixflo.com/Tech/WebAPI
 
 B<You should refer to the official fixflo API documentation in conjunction>
