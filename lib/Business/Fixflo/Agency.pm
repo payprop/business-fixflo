@@ -12,6 +12,7 @@ A class for a fixflo agency, extends L<Business::Fixflo::Resource>
 
 use Moo;
 use Business::Fixflo::Exception;
+use Business::Fixflo::Envelope;
 
 extends 'Business::Fixflo::Resource';
 
@@ -63,27 +64,43 @@ is not set
 =cut
 
 sub create {
-    my ( $self ) = @_;
+    my ( $self,$update ) = @_;
 
-    if ( $self->Id ) {
+    if ( ! $update && $self->Id ) {
         Business::Fixflo::Exception->throw({
             message  => "Can't create Agency when Id is already set",
         });
-    }
-
-    return $self->client->api_post( 'Agency',{ $self->to_hash } );
-}
-
-sub update {
-    my ( $self ) = @_;
-
-    if ( ! $self->Id ) {
+    } elsif ( $update && ! $self->Id ) {
         Business::Fixflo::Exception->throw({
             message  => "Can't update Agency if Id is not set",
         });
     }
 
-    return $self->client->api_post( 'Agency',{ $self->to_hash } );
+    return $self->_parse_envelope_data(
+        $self->client->api_post( 'Agency',{ $self->to_hash } )
+    );
+}
+
+sub _parse_envelope_data {
+    my ( $self,$data ) = @_;
+
+    return $self if ! ref( $data );
+
+    my $Envelope = Business::Fixflo::Envelope->new(
+        client => $self->client,
+        %{ $data }
+    );
+
+	foreach my $attr ( keys( %{ $Envelope->Entity } ) ) {
+		$self->$attr( $Envelope->Entity->{$attr} );
+	}
+
+    return $self;
+}
+
+sub update {
+    my ( $self ) = @_;
+    return $self->create( 'update' );
 }
 
 sub delete {
@@ -95,7 +112,9 @@ sub delete {
         });
     }
 
-    return $self->client->api_delete( 'Agency',{ $self->to_hash } );
+    return $self->_parse_envelope_data(
+        $self->client->api_delete( 'Agency',{ $self->to_hash } )
+    );
 }
 
 =head1 AUTHOR

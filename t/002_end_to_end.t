@@ -131,22 +131,39 @@ $ff = Business::Fixflo->new(
 );
 
 isa_ok(
-    my $agencies = $ff->agencies,
-    'Business::Fixflo::Paginator',
-    '->agencies'
-);
-
-isa_ok(
     my $NewAgency = Business::Fixflo::Agency->new(
         client       => $ff->client,
         Id           => undef,
-        AgencyName   => 'bff_end_to_end',
-        EmailAddress => 'leejo@cpan.org',
+        AgencyName   => join( '_','bff_end_to_end',time,$$ ),
+        EmailAddress => time . '_' . $$ . '_leejo@cpan.org',
     ),
     'Business::Fixflo::Agency'
 );
 
-note explain $NewAgency->create;
+ok( $NewAgency->create,'->create' );
+
+cmp_deeply(
+    $NewAgency,
+    bless( {
+        'AgencyName'    => re( '^bff_end_to_end_\d+_\d+$' ),
+        'Created'       => re( '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}' ),
+        'CustomDomain'  => ignore(),
+        'EmailAddress'  => ignore(),
+        'FeatureType'   => 0,
+        'Id'            => ignore(),
+        'IsDeleted'     => ignore(),
+        'IssueTreeRoot' => ignore(),
+        'SiteBaseUrl'   => ignore(),
+        client          => ignore(),
+    },'Business::Fixflo::Agency' ),
+    ' ... updates object',
+);
+
+isa_ok(
+    my $agencies = $ff->agencies,
+    'Business::Fixflo::Paginator',
+    '->agencies'
+);
 
 cmp_deeply(
     $agencies,
@@ -166,7 +183,7 @@ cmp_deeply(
     $agencies->objects->[0],
     methods(
         'client' => ignore(),
-        'url'    => re( "https://api.fixflo.com/api/v2/agency/[^/]+" ),
+        'url'    => re( "https://api.test.fixflo.com/api/v2/agency/[^/]+" ),
     ),
     ' ... ->objects'
 );
@@ -197,6 +214,10 @@ cmp_deeply(
     '->agency',
 );
 
-note explain $NewAgency->delete;
+note explain $agency;
+
+ok( $agency->delete,'->delete' );
+
+note explain $agency;
 
 # vim: ts=4:sw=4:et

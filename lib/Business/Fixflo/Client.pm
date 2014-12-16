@@ -269,18 +269,6 @@ features, bug fixes, or anything else then please raise an issue / pull request:
 
 =cut
 
-=head1 AUTHOR
-
-Lee Johnson - C<leejo@cpan.org>
-
-This library is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself. If you would like to contribute documentation,
-features, bug fixes, or anything else then please raise an issue / pull request:
-
-    https://github.com/leejo/business-fixflo
-
-=cut
-
 1;
 
 # vim: ts=4:sw=4:et

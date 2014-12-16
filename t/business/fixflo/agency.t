@@ -12,7 +12,7 @@ use Business::Fixflo::Client;
 use_ok( 'Business::Fixflo::Agency' );
 isa_ok(
     my $Agency = Business::Fixflo::Agency->new(
-		'Id'              => 1,
+        'Id'              => 1,
         'client'          => Business::Fixflo::Client->new(
             username      => 'foo',
             password      => 'bar',
@@ -50,8 +50,8 @@ no warnings 'redefine';
 *Business::Fixflo::Client::api_post   = sub { 'updated' };
 *Business::Fixflo::Client::api_delete = sub { 'deleted' };
 
-is( $Agency->update,'updated','update' );
-is( $Agency->delete,'deleted','delete' );
+isa_ok( $Agency->update,'Business::Fixflo::Agency','update' );
+isa_ok( $Agency->delete,'Business::Fixflo::Agency','delete' );
 
 throws_ok(
     sub { $Agency->create },
@@ -66,7 +66,7 @@ like(
 );
 
 delete( $Agency->{Id} );
-is( $Agency->create,'updated','create' );
+isa_ok( $Agency->create,'Business::Fixflo::Agency','create' );
 
 throws_ok(
     sub { $Agency->update },

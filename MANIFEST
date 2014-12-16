@@ -6,6 +6,7 @@ README.pod
 lib/Business/Fixflo.pm
 lib/Business/Fixflo/Agency.pm
 lib/Business/Fixflo/Client.pm
+lib/Business/Fixflo/Envelope.pm
 lib/Business/Fixflo/Exception.pm
 lib/Business/Fixflo/Issue.pm
 lib/Business/Fixflo/Paginator.pm
