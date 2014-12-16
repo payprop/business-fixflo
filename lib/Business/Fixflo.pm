@@ -3,7 +3,7 @@ package Business::Fixflo;
 =head1 NAME
 
 Business::Fixflo - Perl library for interacting with the Fixflo API
-(https://fixflo.com)
+(https://www.fixflo.com)
 
 =for html
 <a href='https://travis-ci.org/leejo/business-fixflo?branch=master'><img src='https://travis-ci.org/leejo/business-fixflo.svg?branch=master' alt='Build Status' /></a>
@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 =head1 VERSION
 
-0.01_01
+0.01_02
 
 =head1 DESCRIPTION
 
