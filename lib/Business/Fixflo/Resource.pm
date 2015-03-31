@@ -26,7 +26,7 @@ has client => (
     is       => 'ro',
     isa      => sub {
         confess( "$_[0] is not a Business::Fixflo::Client" )
-            if ref $_[0] ne 'Business::Fixflo::Client'
+            if ref $_[0] ne 'Business::Fixflo::Client';
     },
     required => 1,
 );
@@ -84,6 +84,23 @@ sub get {
 	}
 
 	return $self;
+}
+
+sub _parse_envelope_data {
+    my ( $self,$data ) = @_;
+
+    return $self if ! ref( $data );
+
+    my $Envelope = Business::Fixflo::Envelope->new(
+        client => $self->client,
+        %{ $data }
+    );
+
+	foreach my $attr ( keys( %{ $Envelope->Entity // {} } ) ) {
+		$self->$attr( $Envelope->Entity->{$attr} );
+	}
+
+    return $self;
 }
 
 =head1 AUTHOR

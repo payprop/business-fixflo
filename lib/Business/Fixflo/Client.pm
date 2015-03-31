@@ -19,11 +19,14 @@ use Business::Fixflo::Exception;
 use Business::Fixflo::Paginator;
 use Business::Fixflo::Issue;
 use Business::Fixflo::Agency;
+use Business::Fixflo::Property;
+use Business::Fixflo::PropertyAddress;
+use Business::Fixflo::QuickViewPanel;
 
-use Carp qw/ confess /;
 use MIME::Base64 qw/ encode_base64 /;
 use LWP::UserAgent;
 use JSON ();
+use Carp qw/ cluck /;
 
 =head1 ATTRIBUTES
 
@@ -82,6 +85,12 @@ has url_suffix => (
     default  => sub { 'fixflo.com' },
 );
 
+has url_scheme => (
+    is       => 'ro',
+    required => 0,
+    default  => sub { 'https' },
+);
+
 has 'base_url' => (
     is       => 'ro',
     required => 0,
@@ -90,7 +99,7 @@ has 'base_url' => (
         my ( $self ) = @_;
         return $ENV{FIXFLO_URL}
             ? $ENV{FIXFLO_URL}
-            : 'https://' . $self->custom_domain . '.' . $self->url_suffix;
+            : $self->url_scheme . '://' . $self->custom_domain . '.' . $self->url_suffix;
     }
 );
 
@@ -140,6 +149,49 @@ sub _get_agencies {
     return $Paginator;
 }
 
+sub _get_properties {
+    my ( $self,$params ) = @_;
+    my $properties = $self->_api_request( 'GET','Property/Search',$params );
+
+    my $Paginator = Business::Fixflo::Paginator->new(
+        links  => {
+            next     => $properties->{NextURL},
+            previous => $properties->{PreviousURL},
+        },
+        client  => $self,
+        class   => 'Business::Fixflo::Property',
+        objects => [ map { Business::Fixflo::Property->new(
+            client  => $self,
+            Address => delete( $_->{Address} ),
+            %{ $_ },
+        ) } @{ $properties->{Items} } ],
+    );
+
+    return $Paginator;
+}
+
+sub _get_property_addresses {
+    my ( $self,$params ) = @_;
+    my $property_addresses = $self->_api_request(
+        'GET','PropertyAddress/Search',$params
+    );
+
+    my $Paginator = Business::Fixflo::Paginator->new(
+        links  => {
+            next     => $property_addresses->{NextURL},
+            previous => $property_addresses->{PreviousURL},
+        },
+        client  => $self,
+        class   => 'Business::Fixflo::PropertyAddress',
+        objects => [ map { Business::Fixflo::PropertyAddress->new(
+            client  => $self,
+            %{ $_ },
+        ) } @{ $property_addresses->{Items} } ],
+    );
+
+    return $Paginator;
+}
+
 sub _get_issue {
     my ( $self,$id ) = @_;
 
@@ -164,6 +216,52 @@ sub _get_agency {
     );
 
     return $issue;
+}
+
+sub _get_property {
+    my ( $self,$id,$is_external_id ) = @_;
+
+    my $query = $is_external_id
+        ? "ExternalPropertyRef=$id"
+        : "PropertyId=$id";
+
+    my $data = $self->_api_request( 'GET',"Property?$query" );
+
+    my $property = Business::Fixflo::Property->new(
+        client => $self,
+        %{ $data },
+    );
+
+    return $property;
+}
+
+sub _get_property_address {
+    my ( $self,$id ) = @_;
+
+    my $data = $self->_api_request( 'GET',"PropertyAddress/$id" );
+
+    my $property_address = Business::Fixflo::PropertyAddress->new(
+        client => $self,
+        %{ $data },
+    );
+
+    return $property_address;
+}
+
+sub _get_quick_view_panels {
+    my ( $self,$id ) = @_;
+
+    my $data = $self->_api_request( 'GET',"qvp" );
+    my @qvps;
+
+    foreach my $qvp ( @{ $data // [] } ) {
+        push( @qvps,Business::Fixflo::QuickViewPanel->new(
+            client => $self,
+            %{ $qvp }
+        ) );
+    }
+
+    return @qvps;
 }
 
 =head1 METHODS
@@ -200,6 +298,9 @@ sub api_delete {
 sub _api_request {
     my ( $self,$method,$path,$params ) = @_;
 
+    cluck( "$method -> $path" )
+        if $ENV{FIXFLO_DEV_TESTING};
+
     my $ua = LWP::UserAgent->new;
     $ua->agent( $self->user_agent );
 
@@ -212,6 +313,11 @@ sub _api_request {
             ? $path : join( '/',$self->base_url . $self->api_path,$path ),
     );
 
+    cluck(
+        $method => $path =~ /^http/
+            ? $path : join( '/',$self->base_url . $self->api_path,$path ),
+    ) if $ENV{FIXFLO_DEV_TESTING};
+
     $req->header( 'Authorization' =>
         "basic "
         . encode_base64( join( ":",$self->username,$self->password ) )
@@ -222,7 +328,10 @@ sub _api_request {
     if ( $method =~ /POST|PUT|DELETE/ ) {
         if ( $params ) {
             $req->content_type( 'application/json' );
-            $req->content( JSON->new->encode( $params ) )
+            $req->content( JSON->new->encode( $params ) );
+
+            cluck( $req->content )
+                if $ENV{FIXFLO_DEV_TESTING};
         }
     }
 
@@ -238,6 +347,9 @@ sub _api_request {
         return $data;
     }
     else {
+
+        cluck( "RES: @{[ $res->code ]}" )
+            if $ENV{FIXFLO_DEV_TESTING};
 
         Business::Fixflo::Exception->throw({
             message  => $res->content,

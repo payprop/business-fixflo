@@ -41,6 +41,8 @@ can_ok(
         FeatureType
         IssueTreeRoot
         SiteBaseUrl
+        DefaultTimeZoneId
+        Locale
     /,
 );
 

@@ -31,71 +31,82 @@ can_ok(
         password
         custom_domain
         client
+        issues
+        agencies
+        properties
+        issue
+        agency
+        property
+        property_address
     /,
 );
 
+foreach my $method ( qw/
+    issues agencies properties property_addresses quick_view_panels
+/ ) {
+
+    my @items = $method =~ /prop/
+        ? ( { Address => {} } ) : ( qw/ url1 url2 url3 / );
+
+    no warnings 'redefine';
+    *Business::Fixflo::Client::_api_request = sub {
+        return $method =~ /quick/
+        ? [ {} ]
+        : {
+            NextURL     => 'foo',
+            PreviousURL => 'bar',
+            Items       => [ @items ],
+        }
+    };
+
+    ok( my $Paginator = $Fixflo->$method,"$method" );
+
+    next if $method eq 'quick_view_panels';
+
+    isa_ok( $Paginator,'Business::Fixflo::Paginator' );
+
+    my $class =
+          $method eq 'issues'     ? 'Business::Fixflo::Issue'
+        : $method eq 'agencies'   ? 'Business::Fixflo::Agency'
+        : $method eq 'properties' ? 'Business::Fixflo::Property'
+        : 'Business::Fixflo::PropertyAddress';
+
+    cmp_deeply(
+        $Paginator->objects,
+        [
+            map { $class->new(
+                client => $Fixflo->client,
+                ( $method =~ /prop/
+                    ? ( Address => {} )
+                    : ( url     => "url" . $_ )
+                )
+            ) } ( $method =~ /prop/ ? ( 1 ) : ( 1 .. 3 ) ),
+        ],
+        $method,
+    );
+}
+
 no warnings 'redefine';
-*Business::Fixflo::Client::_api_request = sub {
-	return {
-		NextURL     => 'foo',
-		PreviousURL => 'bar',
-		Items       => [ qw/
-			url1 url2 url3
-		/ ],
-	}
-};
-
-isa_ok(
-    my $Issues = $Fixflo->issues,
-    'Business::Fixflo::Paginator',
-);
-
-cmp_deeply(
-	$Issues->objects,
-	[
-		map { Business::Fixflo::Issue->new(
-			client => $Fixflo->client,
-			url    => "url" . $_,
-		) } 1 .. 3,
-	],
-	'issues',
-);
-
-isa_ok(
-    my $Agencies = $Fixflo->agencies,
-    'Business::Fixflo::Paginator',
-);
-
-cmp_deeply(
-	$Agencies->objects,
-	[
-		map { Business::Fixflo::Agency->new(
-			client => $Fixflo->client,
-			url    => "url" . $_,
-		) } 1 .. 3,
-	],
-	'agencies',
-);
-
 *Business::Fixflo::Client::_api_request = sub {
 	return {
         'Id'        => 1,
 	}
 };
 
-isa_ok(
-    my $Issue = $Fixflo->issue( 1 ),
-    'Business::Fixflo::Issue',
-);
+foreach my $method ( qw/ issue agency property property_address / ) {
 
-is( $Issue->Id,1,'issue (Id)' );
+    my $class =
+          $method eq 'issue'    ? 'Business::Fixflo::Issue'
+        : $method eq 'agency'   ? 'Business::Fixflo::Agency'
+        : $method eq 'property' ? 'Business::Fixflo::Property'
+        : 'Business::Fixflo::PropertyAddress';
 
-isa_ok(
-    my $Agency = $Fixflo->agency( 1 ),
-    'Business::Fixflo::Agency',
-);
+    isa_ok( my $Object = $Fixflo->$method( 1 ),$class );
+    is( $Object->Id,1,"$method (Id)" );
 
-is( $Agency->Id,1,'agency (Id)' );
+    isa_ok( $Object = $Fixflo->$method( 1,1 ),$class );
+    is( $Object->Id,1,"$method (Id with external Id)" );
+}
 
 done_testing();
 

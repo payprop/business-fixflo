@@ -59,6 +59,18 @@ cmp_deeply(
     'get'
 );
 
+isa_ok(
+    $Resource->_parse_envelope_data({
+        Entity             => undef,
+        Errors             => undef,
+        HttpStatusCode     => 200,
+        HttpStatusCodeDesc => 'OK',
+        Messages           => undef,
+    }),
+    'Business::Fixflo::Resource',
+    '_parse_envelope_data (no data)',
+);
+
 done_testing();
 
 # vim: ts=4:sw=4:et

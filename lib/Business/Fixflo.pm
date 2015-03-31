@@ -136,11 +136,17 @@ has url_suffix => (
     default  => sub { 'fixflo.com' },
 );
 
+has url_scheme => (
+    is       => 'ro',
+    required => 0,
+    default  => sub { 'https' },
+);
+
 has client => (
     is       => 'ro',
     isa      => sub {
         confess( "$_[0] is not a Business::Fixflo::Client" )
-            if ref $_[0] ne 'Business::Fixflo::Client'
+            if ref $_[0] ne 'Business::Fixflo::Client';
     },
     required => 0,
     lazy     => 1,
@@ -156,6 +162,7 @@ has client => (
             password      => $self->password,
             custom_domain => $self->custom_domain,
             url_suffix    => $self->url_suffix,
+            url_scheme    => $self->url_scheme,
         );
     },
 );
@@ -164,10 +171,15 @@ has client => (
 
     issues
     agencies
+    properties
+    property_addresses
     issue
     agency
+    property
+    property_address
+    quick_view_panels
 
-Get a [list of] issue(s) / agenc(y|ies):
+Get a [list of] issue(s) / agenc(y|ies) / propert(y|ies) / property address(es):
 
     my $paginator = $ff->issues( %query_params );
 
@@ -186,8 +198,18 @@ through and these will be correctly changed into strings when calling the API:
         CreatedSince  => DateTime->now->subtract( months => 1 ),
     );
 
+    # properties in given postal code
+    my $paginator = $ff->properties(
+        Keywords => 'NW1',
+    );
+
 Refer to the L<Business::Fixflo::Paginator> documentation for what to do with
 the returned paginator object.
+
+Note the property method can take a flag to indicate that the passed $id is an
+external reference:
+
+    my $Property = $ff->property( 'P123',1 );
 
 =cut
 
@@ -201,6 +223,16 @@ sub agencies {
     return $self->client->_get_agencies( \%params );
 }
 
+sub properties {
+    my ( $self,%params ) = @_;
+    return $self->client->_get_properties( \%params );
+}
+
+sub property_addresses {
+    my ( $self,%params ) = @_;
+    return $self->client->_get_property_addresses( \%params );
+}
+
 sub issue {
     my ( $self,$id ) = @_;
     return $self->client->_get_issue( $id );
@@ -211,15 +243,36 @@ sub agency {
     return $self->client->_get_agency( $id );
 }
 
+sub property {
+    my ( $self,$id,$is_external_id ) = @_;
+    return $self->client->_get_property( $id,$is_external_id );
+}
+
+sub property_address {
+    my ( $self,$id ) = @_;
+    return $self->client->_get_property_address( $id );
+}
+
+sub quick_view_panels {
+    my ( $self ) = @_;
+    return $self->client->_get_quick_view_panels;
+}
+
 =head1 SEE ALSO
+
+L<Business::Fixflo::Address>
+
+L<Business::Fixflo::Agency>
 
 L<Business::Fixflo::Client>
 
 L<Business::Fixflo::Issue>
 
-L<Business::Fixflo::Agency>
-
 L<Business::Fixflo::Paginator>
+
+L<Business::Fixflo::Property>
+
+L<Business::Fixflo::PropertyAddress>
 
 L<http://www.fixflo.com/Tech/Api/V2/Urls>
 

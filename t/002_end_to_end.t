@@ -14,24 +14,27 @@ use Business::Fixflo::Agency;
 plan skip_all => "FIXFLO_ENDTOEND required"
     if ! $ENV{FIXFLO_ENDTOEND};
 
-$ENV{FIXFLO_DEV_TESTING} = 1;
-
 # this is an "end to end" test - it will call the fixflo API
 # using the details defined in the ENV variables below. you
 # will need at least one issue (with a photo uploaded) and
 # one agency for this test to pass
-my ( $username,$password,$domain,$tp_username,$tp_password ) = @ENV{qw/
-    FIXFLO_USERNAME
-    FIXFLO_PASSWORD
-    FIXFLO_CUSTOM_DOMAIN
-    FIXFLO_3RD_PARTY_USERNAME
-    FIXFLO_3RD_PARTY_PASSWORD
-/};
+my ( $username,$password,$domain,$tp_username,$tp_password,$server,$scheme )
+    = @ENV{qw/
+        FIXFLO_USERNAME
+        FIXFLO_PASSWORD
+        FIXFLO_CUSTOM_DOMAIN
+        FIXFLO_3RD_PARTY_USERNAME
+        FIXFLO_3RD_PARTY_PASSWORD
+        FIXFLO_TEST_SERVER
+        FIXFLO_URL_SCHEME
+    /};
 
 my $ff = Business::Fixflo->new(
     username      => $username,
     password      => $password,
     custom_domain => $domain,
+    url_suffix    => $server ? $server : 'fixflo.com',
+    url_scheme    => $scheme ? $scheme : 'https',
 );
 
 isa_ok(
@@ -58,7 +61,7 @@ cmp_deeply(
     $issues->objects->[0],
     methods(
         'client' => ignore(),
-        'url'    => re( "https://$domain.fixflo.com/api/v2/issue/[^/]+" ),
+        'url'    => re( "https://$domain.$server/api/v2/issue/[^/]+" ),
     ),
     ' ... ->objects'
 );
@@ -120,6 +123,174 @@ isa_ok(
     '->issue'
 );
 
+# TODO: coverage here for recently added objects
+my $property_id = time;
+
+isa_ok(
+    my $Address = Business::Fixflo::Address->new(
+        client       => $ff->client,
+        AddressLine1 => '1 some street',
+        AddressLine2 => 'some district',
+        Town         => 'some town',
+        County       => 'some country',
+        PostCode     => 'AB1 2CD',
+        Country      => 'UK',
+    ),
+    'Business::Fixflo::Address'
+);
+
+isa_ok(
+    my $NewProperty = Business::Fixflo::Property->new(
+        client              => $ff->client,
+        ExternalPropertyRef => "PP$property_id",
+        Address             => $Address,
+    ),
+    'Business::Fixflo::Property'
+);
+
+# even though we call ->create we get back an existing property
+# as fixflo will match on the address and return a matching one
+ok( $NewProperty->create,'->create' );
+
+cmp_deeply(
+    $NewProperty,
+    bless( {
+      'Address' => bless( {
+        'AddressLine1' => '1 some street',
+        'AddressLine2' => 'some district',
+        'Country' => undef,
+        'County' => undef,
+        'PostCode' => 'AB1 2CD',
+        'Town' => 'some town',
+        'client' => 0
+      }, 'Business::Fixflo::Address' ),
+      'ExternalPropertyRef' => "PP$property_id",
+      'Id' => ignore(),
+      'PropertyAddressId' => ignore(),
+      'PropertyId' => 0,
+      'client' => bless( {
+        'api_path' => '/api/v2',
+        'base_url' => 'https://pptestagency.test.fixflo.com',
+        'custom_domain' => 'pptestagency',
+        'password' => '8XTUmRHkQvGm9G',
+        'url_scheme' => 'https',
+        'url_suffix' => 'test.fixflo.com',
+        'user_agent' => 'business-fixflo/perl/v0.01',
+        'username' => 'laurent@g3s.ch'
+      }, 'Business::Fixflo::Client' )
+    }, 'Business::Fixflo::Property' ),
+    '->create'
+);
+
+isa_ok(
+    my $properties = $ff->properties(
+        Keywords => 'AB1 2CD',
+    ),
+    'Business::Fixflo::Paginator',
+    '->properties'
+);
+
+cmp_deeply(
+    $properties,
+    bless({
+        'class'  => 'Business::Fixflo::Property',
+        'client' => ignore(),
+        'links' => {
+            'next'     => ignore(),
+            'previous' => ignore(),
+        },
+        'objects' => ignore(),
+    },'Business::Fixflo::Paginator' ),
+    '->properties'
+);
+
+cmp_deeply(
+    $properties->objects->[0],
+    methods(
+        'client' => ignore(),
+        'url'    => re( "https://$domain.$server/api/v2/Property/[^/]+" ),
+    ),
+    ' ... ->objects'
+);
+
+isa_ok(
+    my $Property = $properties->objects->[0]->get,
+    'Business::Fixflo::Property',
+    ' ... ->get'
+);
+
+isa_ok(
+    my $property_addresses = $ff->property_addresses,
+    'Business::Fixflo::Paginator',
+    '->property_addresses'
+);
+
+cmp_deeply(
+    $property_addresses,
+    bless({
+        'class'  => 'Business::Fixflo::PropertyAddress',
+        'client' => ignore(),
+        'links' => {
+            'next'     => ignore(),
+            'previous' => ignore(),
+        },
+        'objects' => ignore(),
+    },'Business::Fixflo::Paginator' ),
+    '->property_addresses'
+);
+
+cmp_deeply(
+    $property_addresses->objects->[0],
+    methods(
+        'client' => ignore(),
+    ),
+    ' ... ->objects'
+);
+
+isa_ok(
+    my $PropertyAddress = $property_addresses->objects->[0]->get,
+    'Business::Fixflo::PropertyAddress',
+    ' ... ->get'
+);
+
+# merge property / property address
+$Property = $PropertyAddress->property;
+my $AlternatePropertyAddress = $property_addresses->objects->[1]->get;
+
+ok( $AlternatePropertyAddress->merge( $Property ),'->merge' );
+ok( $AlternatePropertyAddress->split,'->split' );
+
+my $qvps = [ $ff->quick_view_panels ];
+isa_ok( my $QVP = $qvps->[0],'Business::Fixflo::QuickViewPanel' );
+
+cmp_deeply(
+    $QVP,
+    bless( {
+        'DataTypeName' => 'IssueStatusSummary',
+        'Explanation'  => 'Summarises all outstanding issues by status',
+        'QVPTypeId'    => 1,
+        'Title'        => 'Overview',
+        'Url'          => re( '/qvp/issue(status)?summary/\d+$' ),
+        'client'       => ignore(),
+    },'Business::Fixflo::QuickViewPanel' ),
+    'QVP',
+);
+
+cmp_deeply(
+    ( $QVP->issue_status_summary || $QVP->issue_summary ),
+    [
+        {
+        'Count'       => 1,
+        'HtmlColor'   => '#6386BA',
+        'HtmlColorHi' => '#76A0DF',
+        'Label'       => 'Reported',
+        'Status'      => 'Reported',
+        'StatusId'    => 0
+        }
+    ],
+    ' ... issue_status_summary / issue_summary',
+);
+
 # to create/update/delete agencies we need to use the third party api
 $ff = Business::Fixflo->new(
     username      => $tp_username,
@@ -151,6 +322,8 @@ cmp_deeply(
         'IsDeleted'     => ignore(),
         'IssueTreeRoot' => ignore(),
         'SiteBaseUrl'   => ignore(),
+        'DefaultTimeZoneId' => ignore(),
+        'Locale'        => ignore(),
         client          => ignore(),
     },'Business::Fixflo::Agency' ),
     ' ... updates object',
@@ -204,6 +377,8 @@ cmp_deeply(
             IsDeleted
             IssueTreeRoot
             SiteBaseUrl
+            DefaultTimeZoneId
+            Locale
             client
             url
         / ),

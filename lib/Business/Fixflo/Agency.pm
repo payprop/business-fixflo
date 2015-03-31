@@ -40,6 +40,8 @@ has [ qw/
     IsDeleted
     IssueTreeRoot
     SiteBaseUrl
+    DefaultTimeZoneId
+    Locale
 / ] => (
     is => 'rw',
 );
@@ -79,23 +81,6 @@ sub create {
     return $self->_parse_envelope_data(
         $self->client->api_post( 'Agency',{ $self->to_hash } )
     );
-}
-
-sub _parse_envelope_data {
-    my ( $self,$data ) = @_;
-
-    return $self if ! ref( $data );
-
-    my $Envelope = Business::Fixflo::Envelope->new(
-        client => $self->client,
-        %{ $data }
-    );
-
-	foreach my $attr ( keys( %{ $Envelope->Entity // {} } ) ) {
-		$self->$attr( $Envelope->Entity->{$attr} );
-	}
-
-    return $self;
 }
 
 sub update {
