@@ -1,7 +1,7 @@
 # NAME
 
 Business::Fixflo - Perl library for interacting with the Fixflo API
-(https://fixflo.com)
+(https://www.fixflo.com)
 
 <div>
 
@@ -11,12 +11,12 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 # VERSION
 
-0.01\_01
+0.02
 
 # DESCRIPTION
 
 Business::Fixflo is a library for easy interface to the fixflo property
-repair service, it implements most of the functionality currently found
+repair service, it implements all of the functionality currently found
 in the service's API documentation: http://www.fixflo.com/Tech/WebAPI
 
 **You should refer to the official fixflo API documentation in conjunction**
@@ -112,10 +112,15 @@ you shouldn't need to pass this
 
     issues
     agencies
+    properties
+    property_addresses
     issue
     agency
+    property
+    property_address
+    quick_view_panels
 
-Get a \[list of\] issue(s) / agenc(y|ies):
+Get a \[list of\] issue(s) / agenc(y|ies) / propert(y|ies) / property address(es):
 
     my $paginator = $ff->issues( %query_params );
 
@@ -134,18 +139,42 @@ through and these will be correctly changed into strings when calling the API:
         CreatedSince  => DateTime->now->subtract( months => 1 ),
     );
 
+    # properties in given postal code
+    my $paginator = $ff->properties(
+        Keywords => 'NW1',
+    );
+
 Refer to the [Business::Fixflo::Paginator](https://metacpan.org/pod/Business::Fixflo::Paginator) documentation for what to do with
 the returned paginator object.
 
+Note the property method can take a flag to indicate that the passed $id is an
+external reference:
+
+    my $Property = $ff->property( 'P123',1 );
+
+# EXAMPLES
+
+See the t/002\_end\_to\_end.t test included with this distribution. you can run
+this test against the fixflo test server (requires ENV variables to set the
+Fixflo credentials)
+
 # SEE ALSO
+
+[Business::Fixflo::Address](https://metacpan.org/pod/Business::Fixflo::Address)
+
+[Business::Fixflo::Agency](https://metacpan.org/pod/Business::Fixflo::Agency)
 
 [Business::Fixflo::Client](https://metacpan.org/pod/Business::Fixflo::Client)
 
 [Business::Fixflo::Issue](https://metacpan.org/pod/Business::Fixflo::Issue)
 
-[Business::Fixflo::Agency](https://metacpan.org/pod/Business::Fixflo::Agency)
-
 [Business::Fixflo::Paginator](https://metacpan.org/pod/Business::Fixflo::Paginator)
+
+[Business::Fixflo::Property](https://metacpan.org/pod/Business::Fixflo::Property)
+
+[Business::Fixflo::PropertyAddress](https://metacpan.org/pod/Business::Fixflo::PropertyAddress)
+
+[Business::Fixflo::QuickViewPanel](https://metacpan.org/pod/Business::Fixflo::QuickViewPanel)
 
 [http://www.fixflo.com/Tech/Api/V2/Urls](http://www.fixflo.com/Tech/Api/V2/Urls)
 

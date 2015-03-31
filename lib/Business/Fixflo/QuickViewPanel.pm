@@ -19,23 +19,26 @@ use Carp qw/ confess /;
 
 =head1 ATTRIBUTES
 
-	DataTypeName
-	Explanation
-	QVPTypeId
-	Title
-	Url
-    
+    DataTypeName
+    Explanation
+    QVPTypeId
+    Title
+    Url
+
     issue_summary
     issue_status_summary
+
+issue_summary and issue_status_summary will return the corresponding data from
+the quick view panel - an array(ref) of hash(refs)
 
 =cut
 
 has [ qw/
-	DataTypeName
-	Explanation
-	QVPTypeId
-	Title
-	Url
+    DataTypeName
+    Explanation
+    QVPTypeId
+    Title
+    Url
 / ] => (
     is => 'rw',
 );
@@ -70,7 +73,7 @@ has 'issue_status_summary' => (
 
 sub _get {
     my ( $self ) = @_;
-	return $self->client->api_get( $self->Url );
+    return $self->client->api_get( $self->Url );
 }
 
 =head1 AUTHOR

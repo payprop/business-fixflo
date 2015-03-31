@@ -25,7 +25,7 @@ extends 'Business::Fixflo::Resource';
     PropertyAddressId
     Address
     Addresses
-    
+
 =cut
 
 use Carp qw/ confess /;

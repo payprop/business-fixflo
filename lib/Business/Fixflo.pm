@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 =head1 VERSION
 
-0.01
+0.02
 
 =head1 DESCRIPTION
 
@@ -258,6 +258,12 @@ sub quick_view_panels {
     return $self->client->_get_quick_view_panels;
 }
 
+=head1 EXAMPLES
+
+See the t/002_end_to_end.t test included with this distribution. you can run
+this test against the fixflo test server (requires ENV variables to set the
+Fixflo credentials)
+
 =head1 SEE ALSO
 
 L<Business::Fixflo::Address>
@@ -273,6 +279,8 @@ L<Business::Fixflo::Paginator>
 L<Business::Fixflo::Property>
 
 L<Business::Fixflo::PropertyAddress>
+
+L<Business::Fixflo::QuickViewPanel>
 
 L<http://www.fixflo.com/Tech/Api/V2/Urls>
 
