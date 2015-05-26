@@ -175,7 +175,7 @@ cmp_deeply(
         'password' => '8XTUmRHkQvGm9G',
         'url_scheme' => 'https',
         'url_suffix' => 'test.fixflo.com',
-        'user_agent' => 'business-fixflo/perl/v0.01',
+        'user_agent' => ignore(),
         'username' => 'laurent@g3s.ch'
       }, 'Business::Fixflo::Client' )
     }, 'Business::Fixflo::Property' ),
