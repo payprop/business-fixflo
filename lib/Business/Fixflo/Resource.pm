@@ -59,6 +59,18 @@ Returns a json string representation of the object.
 
     my $json = $Issue->to_json;
 
+=head2 get
+
+Populates the object with its attributes (calls the API)
+
+    $Issue->get
+
+As the data returned in the call to list objects does not contain the full data
+of the objects (it only contains lightweight information, such as the URLs of
+the objects you are interested in) you need to call the ->get method to
+populate the attributes on an object. Really the Paginator just contains a list
+of URLs and an easy way to navigate through them.
+
 =cut
 
 sub to_hash {

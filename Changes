@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.04     2015-05-27
+        - Clarify need to call ->get on Paginator objects in docs
+
 0.03     2015-05-27
         - Fix call to GET Property endpoint
 

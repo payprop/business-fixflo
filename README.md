@@ -40,6 +40,7 @@ Please note this library is a work in progress
 
     while ( my @issues = $issues->next ) {
         foreach my $issue ( @issues ) {
+            $issue->get;
             ...
         }
     }

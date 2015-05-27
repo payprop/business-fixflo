@@ -12,7 +12,7 @@ A role for a fixflo version information.
 
 use Moo::Role;
 
-$Business::Fixflo::VERSION     = '0.03';
+$Business::Fixflo::VERSION     = '0.04';
 $Business::Fixflo::API_VERSION = 'v2';
 
 =head1 AUTHOR

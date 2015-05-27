@@ -72,6 +72,8 @@ isa_ok(
     ' ... ->get'
 );
 
+ok( $issue->FaultCategory,'issue populated' );
+
 cmp_deeply(
     $issue,
     bless( {
