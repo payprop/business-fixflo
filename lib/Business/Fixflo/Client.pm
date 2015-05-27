@@ -27,6 +27,7 @@ use MIME::Base64 qw/ encode_base64 /;
 use LWP::UserAgent;
 use JSON ();
 use Carp qw/ cluck /;
+use feature qw/ say /;
 
 =head1 ATTRIBUTES
 
@@ -322,6 +323,9 @@ sub _api_request {
         "basic "
         . encode_base64( join( ":",$self->username,$self->password ) )
     );
+
+    say "basic " . encode_base64( join( ":",$self->username,$self->password ) )
+        if $ENV{FIXFLO_DEV_TESTING};
 
     $req->header( 'Accept' => 'application/json' );
 

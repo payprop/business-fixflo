@@ -280,7 +280,7 @@ cmp_deeply(
     ( $QVP->issue_status_summary || $QVP->issue_summary ),
     [
         {
-        'Count'       => 1,
+        'Count'       => ignore(),
         'HtmlColor'   => '#6386BA',
         'HtmlColorHi' => '#76A0DF',
         'Label'       => 'Reported',

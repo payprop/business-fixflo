@@ -132,7 +132,10 @@ sub create {
 sub get {
 	my ( $self ) = @_;
 
-	my $data = $self->client->api_get( 'Property',$self->_params );
+	my $data = $self->client->api_get( $self->ExternalPropertyRef
+        ? ( 'Property',$self->_params )
+        : ( "Property/".$self->Id )
+    );
 
 	foreach my $attr ( keys( %{ $data } ) ) {
 		$self->$attr( $data->{$attr} );

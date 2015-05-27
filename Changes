@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.03     2015-05-27
+        - Fix call to GET Property endpoint
+
 0.02     2015-04-01
         - Fixflo API updates added: Properties, PropertyAddresses, QVP
 
