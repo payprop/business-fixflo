@@ -306,6 +306,8 @@ isa_ok(
         Id           => undef,
         AgencyName   => join( '_','bff_end_to_end',time,$$ ),
         EmailAddress => time . '_' . $$ . '_leejo@cpan.org',
+        Locale       => 'en-GB',
+        DefaultTimeZoneId => 'UTC',
     ),
     'Business::Fixflo::Agency'
 );
@@ -324,8 +326,8 @@ cmp_deeply(
         'IsDeleted'     => ignore(),
         'IssueTreeRoot' => ignore(),
         'SiteBaseUrl'   => ignore(),
-        'DefaultTimeZoneId' => ignore(),
-        'Locale'        => ignore(),
+        'DefaultTimeZoneId' => 'UTC',
+        'Locale'        => 'en-GB',
         client          => ignore(),
     },'Business::Fixflo::Agency' ),
     ' ... updates object',
