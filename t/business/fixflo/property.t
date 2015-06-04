@@ -36,6 +36,7 @@ can_ok(
         PropertyAddressId
         Address
         Addresses
+        Issues
 		PropertyId
     /,
 );
@@ -95,6 +96,11 @@ isa_ok( $Property->get,'Business::Fixflo::Property','get' );
 
 isa_ok(
 	my $Addresses = $Property->Addresses,
+	'Business::Fixflo::Paginator'
+);
+
+isa_ok(
+	my $Issues = $Property->Issues,
 	'Business::Fixflo::Paginator'
 );
 

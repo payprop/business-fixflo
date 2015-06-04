@@ -222,6 +222,12 @@ isa_ok(
 );
 
 isa_ok(
+    my $Paginator = $Property->Issues,
+    'Business::Fixflo::Paginator',
+    ' ... ->Issues'
+);
+
+isa_ok(
     my $property_addresses = $ff->property_addresses,
     'Business::Fixflo::Paginator',
     '->property_addresses'

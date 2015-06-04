@@ -25,6 +25,7 @@ extends 'Business::Fixflo::Resource';
     PropertyAddressId
     Address
     Addresses
+    Issues
 
 =cut
 
@@ -79,6 +80,33 @@ has 'Addresses' => (
                 client => $self->client,
                 url    => $_,
             ) } @{ $addresses->{Items} } ],
+        );
+
+        return $Paginator;
+    },
+);
+
+has 'Issues' => (
+    is      => 'rw',
+    lazy    => 1,
+    default => sub {
+        my ( $self ) = @_;
+
+        my $issues = $self->client->api_get(
+            "Property/@{[ $self->Id ]}/Issues",
+        );
+
+        my $Paginator = Business::Fixflo::Paginator->new(
+            links  => {
+                next     => $issues->{NextURL},
+                previous => $issues->{PreviousURL},
+            },
+            client  => $self->client,
+            class   => 'Business::Fixflo::Issue',
+            objects => [ map { Business::Fixflo::Issue->new(
+                client => $self->client,
+                url    => $_,
+            ) } @{ $issues->{Items} } ],
         );
 
         return $Paginator;

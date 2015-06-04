@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.06     2015-06-04
+        - Add Issues attribute to Property object
+
 0.05     2015-06-04
         - Add get method to QuickViewPanel to make it easy to get at
           the QuickViewPanel's data
