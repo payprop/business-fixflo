@@ -1,5 +1,9 @@
 Revision history for Business-Fixflo
 
+0.05     2015-06-04
+        - Add get method to QuickViewPanel to make it easy to get at
+          the QuickViewPanel's data
+
 0.04     2015-05-27
         - Clarify need to call ->get on Paginator objects in docs
 

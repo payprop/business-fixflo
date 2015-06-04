@@ -53,6 +53,12 @@ cmp_deeply(
     'issue_summary',
 );
 
+cmp_deeply(
+    $QuickViewPanel->get,
+    [{ foo => 'bar' }],
+    'get',
+);
+
 done_testing();
 
 # vim: ts=4:sw=4:et

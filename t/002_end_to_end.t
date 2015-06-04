@@ -293,6 +293,27 @@ cmp_deeply(
     ' ... issue_status_summary / issue_summary',
 );
 
+my ( $issues_of_properties_without_ext_ref ) = grep { $_->QVPTypeId == 40 }
+    $ff->quick_view_panels;
+
+foreach my $qvp (
+    sort { $a->QVPTypeId <=> $b->QVPTypeId }
+    $ff->quick_view_panels
+) {
+    diag( sprintf( "%d - %s",$qvp->QVPTypeId,$qvp->Explanation ) );
+}
+
+cmp_deeply(
+    $issues_of_properties_without_ext_ref->get,
+    [
+        {
+            'Key'   => ignore(),
+            'Value' => ignore(),
+        }
+    ],
+    'key_value_pairs',
+);
+
 # to create/update/delete agencies we need to use the third party api
 $ff = Business::Fixflo->new(
     username      => $tp_username,

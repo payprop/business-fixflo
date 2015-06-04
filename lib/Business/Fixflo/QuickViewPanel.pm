@@ -71,6 +71,36 @@ has 'issue_status_summary' => (
     },
 );
 
+=head1 METHODS
+
+=head2 get
+
+Returns the data associated with a QuickViewPanel:
+
+    my ( $issues_of_properties_without_ext_ref ) = grep { $_->QVPTypeId == 40 }
+        $ff->quick_view_panels;
+
+    my $key_value_pairs = $issues_of_properties_without_ext_ref->get;
+
+Since there are many QuickViewPanels you can get the data for a specific
+QuickViewPanel by calling get on that QuickViewPanel
+
+There are quite a lot of QuickViewPanels, to see them all:
+
+    foreach my $qvp (
+        sort { $a->QVPTypeId <=> $b->QVPTypeId }
+        $ff->quick_view_panels
+    ) {
+        printf( "%d - %s",$qvp->QVPTypeId,$qvp->Explanation );
+    }
+
+=cut
+
+sub get {
+    my ( $self ) = @_;
+    return $self->client->api_get( $self->Url );
+}
+
 sub _get {
     my ( $self ) = @_;
     return $self->client->api_get( $self->Url );
