@@ -18,10 +18,11 @@ plan skip_all => "FIXFLO_ENDTOEND required"
 # using the details defined in the ENV variables below. you
 # will need at least one issue (with a photo uploaded) and
 # one agency for this test to pass
-my ( $username,$password,$domain,$tp_username,$tp_password,$server,$scheme )
+my ( $username,$password,$api_key,$domain,$tp_username,$tp_password,$server,$scheme )
     = @ENV{qw/
         FIXFLO_USERNAME
         FIXFLO_PASSWORD
+        FIXFLO_API_KEY
         FIXFLO_CUSTOM_DOMAIN
         FIXFLO_3RD_PARTY_USERNAME
         FIXFLO_3RD_PARTY_PASSWORD
@@ -30,6 +31,7 @@ my ( $username,$password,$domain,$tp_username,$tp_password,$server,$scheme )
     /};
 
 my $ff = Business::Fixflo->new(
+    api_key       => $api_key,
     username      => $username,
     password      => $password,
     custom_domain => $domain,
@@ -174,6 +176,7 @@ cmp_deeply(
       'PropertyAddressId' => ignore(),
       'PropertyId' => 0,
       'client' => bless( {
+        'api_key' => '',
         'api_path' => '/api/v2',
         'base_url' => 'https://pptestagency.test.fixflo.com',
         'custom_domain' => 'pptestagency',

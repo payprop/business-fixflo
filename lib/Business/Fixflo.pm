@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 =head1 VERSION
 
-0.06
+0.07
 
 =head1 DESCRIPTION
 
@@ -30,9 +30,12 @@ Please note this library is a work in progress
 
     # agency API:
     my $ff = Business::Fixflo->new(
+        custom_domain => $domain,
+        api_key       => $api_key,
+
+        # if api_key is not supplied:
         username      => $username,
         password      => $password,
-        custom_domain => $domain,
     );
 
     my $issues   = $ff->issues,
@@ -50,6 +53,7 @@ Please note this library is a work in progress
 
     # third party API:
     my $ff = Business::Fixflo->new(
+        api_key       => $third_party_api_key,
         username      => $third_party_username,
         password      => $third_party_password,
     );
@@ -98,11 +102,15 @@ use Business::Fixflo::Client;
 
 =head2 username
 
-Your Fixflo username
+Your Fixflo username (required if api_key not supplied)
 
 =head2 password
 
-Your Fixflo password
+Your Fixflo password (required if api_key not supplied)
+
+=head2 api_key
+
+Your Fixflo API Key (required if username and password not supplied)
 
 =head2 custom_domain
 
@@ -120,9 +128,9 @@ you shouldn't need to pass this
 
 =cut
 
-has [ qw/ username password / ] => (
+has [ qw/ username password api_key / ] => (
     is       => 'ro',
-    required => 1,
+    required => 0,
 );
 
 has custom_domain => (
@@ -159,6 +167,7 @@ has client => (
         }
 
         return Business::Fixflo::Client->new(
+            api_key       => $self->api_key,
             username      => $self->username,
             password      => $self->password,
             custom_domain => $self->custom_domain,

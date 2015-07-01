@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 # VERSION
 
-0.06
+0.07
 
 # DESCRIPTION
 
@@ -30,9 +30,12 @@ Please note this library is a work in progress
 
     # agency API:
     my $ff = Business::Fixflo->new(
+        custom_domain => $domain,
+        api_key       => $api_key,
+
+        # if api_key is not supplied:
         username      => $username,
         password      => $password,
-        custom_domain => $domain,
     );
 
     my $issues   = $ff->issues,
@@ -50,6 +53,7 @@ Please note this library is a work in progress
 
     # third party API:
     my $ff = Business::Fixflo->new(
+        api_key       => $third_party_api_key,
         username      => $third_party_username,
         password      => $third_party_password,
     );
@@ -89,11 +93,15 @@ appropriate error catching code (TryCatch in the below example):
 
 ## username
 
-Your Fixflo username
+Your Fixflo username (required if api\_key not supplied)
 
 ## password
 
-Your Fixflo password
+Your Fixflo password (required if api\_key not supplied)
+
+## api\_key
+
+Your Fixflo API Key (required if username and password not supplied)
 
 ## custom\_domain
 

@@ -26,18 +26,22 @@ use Business::Fixflo::QuickViewPanel;
 use MIME::Base64 qw/ encode_base64 /;
 use LWP::UserAgent;
 use JSON ();
-use Carp qw/ cluck /;
+use Carp qw/ cluck confess /;
 use feature qw/ say /;
 
 =head1 ATTRIBUTES
 
 =head2 username
 
-Your Fixflo username
+Your Fixflo username (required if api_key not supplied)
 
 =head2 password
 
-Your Fixflo password
+Your Fixflo password (required if api_key not supplied)
+
+=head2 api_key
+
+Your Fixflo API Key (required if username and password not supplied)
 
 =head2 custom_domain
 
@@ -67,9 +71,14 @@ The version of the Fixflo API to use, defaults to:
 
 =cut
 
-has [ qw/ username password custom_domain / ] => (
+has [ qw/ custom_domain / ] => (
     is       => 'ro',
     required => 1,
+);
+
+has [ qw/ username password api_key / ] => (
+    is       => 'ro',
+    required => 0,
 );
 
 has user_agent => (
@@ -109,6 +118,18 @@ has api_path => (
     required => 0,
     default  => sub { '/api/' . $Business::Fixflo::API_VERSION },
 );
+
+sub BUILD {
+    my ( $self ) = @_;
+
+    if (
+        ! $self->api_key
+        && !( $self->username && $self->password )
+    ) {
+        confess( "api_key or username + password required" );
+    }
+}
+
 
 sub _get_issues {
     my ( $self,$params ) = @_;
@@ -308,26 +329,7 @@ sub _api_request {
     $path = $self->_add_query_params( $path,$params )
         if $method eq 'GET';
 
-    my $req = HTTP::Request->new(
-        # passing through the absolute URL means we don't build it
-        $method => $path =~ /^http/
-            ? $path : join( '/',$self->base_url . $self->api_path,$path ),
-    );
-
-    cluck(
-        $method => $path =~ /^http/
-            ? $path : join( '/',$self->base_url . $self->api_path,$path ),
-    ) if $ENV{FIXFLO_DEV_TESTING};
-
-    $req->header( 'Authorization' =>
-        "basic "
-        . encode_base64( join( ":",$self->username,$self->password ) )
-    );
-
-    say "basic " . encode_base64( join( ":",$self->username,$self->password ) )
-        if $ENV{FIXFLO_DEV_TESTING};
-
-    $req->header( 'Accept' => 'application/json' );
+    my $req = $self->_build_request( $method,$path );
 
     if ( $method =~ /POST|PUT|DELETE/ ) {
         if ( $params ) {
@@ -361,6 +363,40 @@ sub _api_request {
             response => $res->status_line,
         });
     }
+}
+
+sub _build_request {
+    my ( $self,$method,$path ) = @_;
+
+    my $req = HTTP::Request->new(
+        # passing through the absolute URL means we don't build it
+        $method => $path =~ /^http/
+            ? $path : join( '/',$self->base_url . $self->api_path,$path ),
+    );
+
+    cluck(
+        $method => $path =~ /^http/
+            ? $path : join( '/',$self->base_url . $self->api_path,$path ),
+    ) if $ENV{FIXFLO_DEV_TESTING};
+
+    $self->_set_request_headers( $req );
+
+    return $req;
+}
+
+sub _set_request_headers {
+    my ( $self,$req ) = @_;
+
+    my $auth_string = $self->api_key
+        ? $self->api_key
+        : "basic " . encode_base64( join( ":",$self->username,$self->password ) );
+
+    $req->header( 'Authorization' => $auth_string );
+
+    say "Authorization $auth_string"
+        if $ENV{FIXFLO_DEV_TESTING};
+
+    $req->header( 'Accept' => 'application/json' );
 }
 
 sub _add_query_params {

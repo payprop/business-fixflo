@@ -5,6 +5,7 @@ use warnings;
 
 use Test::Most;
 use Test::Deep;
+use Test::Exception;
 use Test::MockObject;
 
 use_ok( 'Business::Fixflo::Client' );
@@ -20,10 +21,35 @@ isa_ok(
 can_ok(
     $Client,
     qw/
+        api_key
         username
         password
         custom_domain
     /,
+);
+
+throws_ok(
+    sub { Business::Fixflo::Client->new( custom_domain => 'foo' ) },
+    qr/api_key or username \+ password required/,
+    'Client->new throws api_key or username + password not set'
+);
+
+throws_ok(
+    sub { Business::Fixflo::Client->new(
+        custom_domain => 'foo',
+        username      => 'foo',
+    ) },
+    qr/api_key or username \+ password required/,
+    'Client->new throws api_key or username + password not set'
+);
+
+throws_ok(
+    sub { Business::Fixflo::Client->new(
+        custom_domain => 'foo',
+        password      => 'foo',
+    ) },
+    qr/api_key or username \+ password required/,
+    'Client->new throws api_key or username + password not set'
 );
 
 # monkey patching LWP here to make this test work without
