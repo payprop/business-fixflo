@@ -42,6 +42,8 @@ has [ qw/
     SiteBaseUrl
     DefaultTimeZoneId
     Locale
+    Password
+    ApiKey
 / ] => (
     is => 'rw',
 );

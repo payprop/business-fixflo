@@ -99,6 +99,7 @@ cmp_deeply(
             Firstname
             Id
             Media
+            Property
             Salutation
             Status
             StatusChanged
@@ -118,6 +119,8 @@ cmp_deeply(
 );
 
 ok( $issue->report,' ... ->report' );
+
+isa_ok( $issue->property,'Business::Fixflo::Property' );
 
 isa_ok(
     $ff->issue( $issue->Id ),
@@ -355,6 +358,8 @@ cmp_deeply(
         'SiteBaseUrl'   => ignore(),
         'DefaultTimeZoneId' => 'UTC',
         'Locale'        => 'en-GB',
+        'ApiKey'        => ignore(),
+        'Password'      => ignore(),
         client          => ignore(),
     },'Business::Fixflo::Agency' ),
     ' ... updates object',
@@ -399,6 +404,8 @@ cmp_deeply(
     $agency,
     bless( {
         ( map { $_ => ignore() } qw/
+            ApiKey
+            Password
             AgencyName
             Created
             CustomDomain

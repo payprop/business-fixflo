@@ -55,6 +55,7 @@ can_ok(
 		FaultNotes
 		ContactNumber
 		StatusChanged
+        Property
     /,
 );
 
@@ -64,6 +65,23 @@ no warnings 'redefine';
 *Business::Fixflo::Client::api_get = sub { 'report_data' };
 
 is( $Issue->report,'report_data','report' );
+
+*Business::Fixflo::Client::api_get = sub { {
+    Property => {
+        'Address' => {
+            'AddressLine1' => 'test2',
+            'AddressLine2' => 'bar',
+            'Country' => undef,
+            'County' => undef,
+            'PostCode' => '12 345',
+            'Town' => 'qux'
+        },
+        'ExternalPropertyRef' => 'PP43052',
+        'Id' => 12840,
+        'PropertyAddressId' => 11753
+    },
+} };
+isa_ok( $Issue->property,'Business::Fixflo::Property' );
 
 done_testing();
 

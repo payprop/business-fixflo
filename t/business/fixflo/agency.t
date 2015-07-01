@@ -43,6 +43,8 @@ can_ok(
         SiteBaseUrl
         DefaultTimeZoneId
         Locale
+        Password
+        ApiKey
     /,
 );
 

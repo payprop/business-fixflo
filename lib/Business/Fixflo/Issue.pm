@@ -14,6 +14,8 @@ use Moo;
 
 extends 'Business::Fixflo::Resource';
 
+use Business::Fixflo::Property;
+
 =head1 ATTRIBUTES
 
 	Address
@@ -58,6 +60,7 @@ has [ qw/
 	Firstname
 	Id
 	Media
+	Property
 	Salutation
 	Status
 	StatusChanged
@@ -85,6 +88,29 @@ Returns the report content (binary, pdf)
 sub report {
 	my ( $self ) = @_;
 	return $self->client->api_get( join( '/',$self->url,'Report' ) );
+}
+
+=head2 property
+
+Returns the L<Business::Fixflo::Property> associated with the issue
+
+    my $Property = $issue->property;
+
+=cut
+
+sub property {
+    my ( $self ) = @_;
+
+    $self->get if ! $self->Property;
+
+    if ( my $property = $self->Property ) {
+        return Business::Fixflo::Property->new(
+            client => $self->client,
+            %{ $property },
+        );
+    }
+
+    return undef;
 }
 
 1;
