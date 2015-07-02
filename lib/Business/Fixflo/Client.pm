@@ -386,9 +386,13 @@ sub _build_request {
 sub _set_request_headers {
     my ( $self,$req ) = @_;
 
-    my $auth_string = $self->api_key
-        ? $self->api_key
-        : "basic " . encode_base64( join( ":",$self->username,$self->password ) );
+    my $auth_string;
+
+    if ( $self->api_key ) {
+        $auth_string = "Bearer " . $self->api_key;
+    } else {
+        $auth_string = "basic " . encode_base64( join( ":",$self->username,$self->password ) );
+    }
 
     $req->header( 'Authorization' => $auth_string );
 

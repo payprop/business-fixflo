@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.09     2015-07-02
+        - Fix Authorization header when using api_key
+
 0.08     2015-07-02
         - Add create_url and search_url to Issue object
         - Change cluck to carp
