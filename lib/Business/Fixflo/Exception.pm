@@ -40,7 +40,7 @@ has message => (
     coerce   => sub {
         my ( $message ) = @_;
 
-        cluck $message if $ENV{FIXFLO_DEV_TESTING};
+        cluck $message if $ENV{FIXFLO_DEBUG};
 
         if ( $message =~ /^[{\[]/ ) {
             # defensive decoding

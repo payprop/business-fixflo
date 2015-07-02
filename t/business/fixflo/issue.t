@@ -83,6 +83,29 @@ is( $Issue->report,'report_data','report' );
 } };
 isa_ok( $Issue->property,'Business::Fixflo::Property' );
 
+my $create_issue_url = $Issue->create_url({
+    IsVacant   => 0,
+    TenantNo   => '123',
+    PropertyId => '456',
+});
+
+is(
+    $create_issue_url,
+    'https://baz.fixflo.com/Issue/Create?IsVacant=0&PropertyId=456&TenantNo=123',
+    'create_url',
+);
+
+my $search_issue_url = $Issue->search_url({
+    a => 'b',
+    c => 'd',
+});
+
+is(
+    $search_issue_url,
+    'https://baz.fixflo.com/Dashboard/Home/#/Dashboard/IssueSearchForm?a=b&c=d',
+    'search_url',
+);
+
 done_testing();
 
 # vim: ts=4:sw=4:et

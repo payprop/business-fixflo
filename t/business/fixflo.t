@@ -10,7 +10,7 @@ use Test::Exception;
 # this makes Business::Fixflo::Exception show a stack
 # trace when any error is thrown so i don't have to keep
 # wrapping stuff in this test in evals to debug
-$ENV{FIXFLO_DEV_TESTING} = 1;
+$ENV{FIXFLO_DEBUG} = 1;
 
 use Business::Fixflo::Issue;
 

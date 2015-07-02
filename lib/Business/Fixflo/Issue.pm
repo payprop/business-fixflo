@@ -13,6 +13,7 @@ A class for a fixflo issue, extends L<Business::Fixflo::Resource>
 use Moo;
 
 extends 'Business::Fixflo::Resource';
+with 'Business::Fixflo::Utils';
 
 use Business::Fixflo::Property;
 
@@ -111,6 +112,51 @@ sub property {
     }
 
     return undef;
+}
+
+=head2 create_url
+
+    my $issue_create_url = $issue->create_url( $params );
+
+Returns a URL string that can be used to create an Issue in Fixflo - the method
+can accept a hashref of params that can pre-populate fields on the page:
+
+    IsVacant   => bool,
+    TenantNo   => string,
+    BMBlockId  => $id,
+    PropertyId => $id
+
+Having called the method redirect the user to the returned URL
+
+=cut
+
+sub create_url {
+    my ( $self,$params ) = @_;
+
+    my $base_url = join( '/',$self->client->base_url,'Issue','Create' );
+    return $base_url . '?' . $self->normalize_params( $params );
+}
+
+=head2 search_url
+
+    my $issue_search_url = $issue->search_url( $params );
+
+Much like create_url but returns a URL string for searching. Note this method
+can accept many URL parameters so check the Fixflo documentation for a complete
+list
+
+Having called the method redirect the user to the returned URL
+
+=cut
+
+sub search_url {
+    my ( $self,$params ) = @_;
+
+    my $base_url = join( '/',$self->client->base_url,
+        'Dashboard','Home','#','Dashboard','IssueSearchForm',
+    );
+
+    return $base_url . '?' . $self->normalize_params( $params );
 }
 
 1;

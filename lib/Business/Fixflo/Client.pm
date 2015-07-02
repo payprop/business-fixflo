@@ -26,8 +26,7 @@ use Business::Fixflo::QuickViewPanel;
 use MIME::Base64 qw/ encode_base64 /;
 use LWP::UserAgent;
 use JSON ();
-use Carp qw/ cluck confess /;
-use feature qw/ say /;
+use Carp qw/ carp confess /;
 
 =head1 ATTRIBUTES
 
@@ -320,8 +319,8 @@ sub api_delete {
 sub _api_request {
     my ( $self,$method,$path,$params ) = @_;
 
-    cluck( "$method -> $path" )
-        if $ENV{FIXFLO_DEV_TESTING};
+    carp( "$method -> $path" )
+        if $ENV{FIXFLO_DEBUG};
 
     my $ua = LWP::UserAgent->new;
     $ua->agent( $self->user_agent );
@@ -336,8 +335,8 @@ sub _api_request {
             $req->content_type( 'application/json' );
             $req->content( JSON->new->encode( $params ) );
 
-            cluck( $req->content )
-                if $ENV{FIXFLO_DEV_TESTING};
+            carp( $req->content )
+                if $ENV{FIXFLO_DEBUG};
         }
     }
 
@@ -354,8 +353,8 @@ sub _api_request {
     }
     else {
 
-        cluck( "RES: @{[ $res->code ]}" )
-            if $ENV{FIXFLO_DEV_TESTING};
+        carp( "RES: @{[ $res->code ]}" )
+            if $ENV{FIXFLO_DEBUG};
 
         Business::Fixflo::Exception->throw({
             message  => $res->content,
@@ -374,10 +373,10 @@ sub _build_request {
             ? $path : join( '/',$self->base_url . $self->api_path,$path ),
     );
 
-    cluck(
+    carp(
         $method => $path =~ /^http/
             ? $path : join( '/',$self->base_url . $self->api_path,$path ),
-    ) if $ENV{FIXFLO_DEV_TESTING};
+    ) if $ENV{FIXFLO_DEBUG};
 
     $self->_set_request_headers( $req );
 
@@ -393,8 +392,8 @@ sub _set_request_headers {
 
     $req->header( 'Authorization' => $auth_string );
 
-    say "Authorization $auth_string"
-        if $ENV{FIXFLO_DEV_TESTING};
+    carp( "Authorization: $auth_string" )
+        if $ENV{FIXFLO_DEBUG};
 
     $req->header( 'Accept' => 'application/json' );
 }

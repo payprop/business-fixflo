@@ -1,5 +1,10 @@
 Revision history for Business-Fixflo
 
+0.08     2015-07-02
+        - Add create_url and search_url to Issue object
+        - Change cluck to carp
+        - Add perldoc for FIXFLO_DEBUG env variable
+
 0.07     2015-07-01
         - Add Property attribute to Issue object
         - Add ApiKey and Password attributes to Agency object
