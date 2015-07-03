@@ -78,7 +78,7 @@ has 'Addresses' => (
             class   => 'Business::Fixflo::PropertyAddress',
             objects => [ map { Business::Fixflo::PropertyAddress->new(
                 client => $self->client,
-                url    => $_,
+                %{ $_ },
             ) } @{ $addresses->{Items} } ],
         );
 
@@ -105,7 +105,7 @@ has 'Issues' => (
             class   => 'Business::Fixflo::Issue',
             objects => [ map { Business::Fixflo::Issue->new(
                 client => $self->client,
-                url    => $_,
+                %{ $_ },
             ) } @{ $issues->{Items} } ],
         );
 

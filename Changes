@@ -1,5 +1,10 @@
 Revision history for Business-Fixflo
 
+0.10     2015-07-03
+        - Fix Property Issues and Addresses attributes to return objects,
+          since calls to this endpoint return a list of json objects and
+          not a list or url strings
+
 0.09     2015-07-02
         - Fix Authorization header when using api_key
 

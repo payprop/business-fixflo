@@ -88,9 +88,7 @@ isa_ok( $Property->get,'Business::Fixflo::Property','get' );
 	return {
 		NextURL     => 'foo',
 		PreviousURL => 'bar',
-		Items       => [ qw/
-			url1 url2 url3
-		/ ],
+		Items       => [ {},{},{} ],
 	}
 };
 
