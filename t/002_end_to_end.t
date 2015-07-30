@@ -165,8 +165,8 @@ cmp_deeply(
       'Address' => bless( {
         'AddressLine1' => '1 some street',
         'AddressLine2' => 'some district',
-        'Country' => undef,
-        'County' => undef,
+        'Country' => '',
+        'County' => '',
         'PostCode' => 'AB1 2CD',
         'Town' => 'some town',
         'client' => 0
@@ -341,6 +341,7 @@ isa_ok(
         EmailAddress => time . '_' . $$ . '_leejo@cpan.org',
         Locale       => 'en-GB',
         DefaultTimeZoneId => 'UTC',
+        IssueTreeRoot => 2,
     ),
     'Business::Fixflo::Agency'
 );
