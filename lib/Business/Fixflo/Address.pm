@@ -19,10 +19,10 @@ extends 'Business::Fixflo::Resource';
 has [ qw/
     AddressLine1
     AddressLine2
-	Town
-	County
-	PostCode
-	Country
+    Town
+    County
+    PostCode
+    Country
 / ] => (
     is => 'rw',
 );

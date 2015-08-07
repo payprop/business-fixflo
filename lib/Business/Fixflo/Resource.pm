@@ -33,16 +33,16 @@ has client => (
 
 has [ qw/ url / ] => (
     is      => 'rw',
-	lazy    => 1,
-	default => sub {
-		my ( $self ) = @_;
+    lazy    => 1,
+    default => sub {
+        my ( $self ) = @_;
         return join(
-			'/',
-			$self->client->base_url . $self->client->api_path,
-			( split( ':',ref( $self ) ) )[-1],
-			$self->Id
-		);
-	},
+            '/',
+            $self->client->base_url . $self->client->api_path,
+            ( split( ':',ref( $self ) ) )[-1],
+            $self->Id
+        );
+    },
 );
 
 =head1 METHODS
@@ -87,15 +87,15 @@ sub to_json {
 }
 
 sub get {
-	my ( $self ) = @_;
+    my ( $self ) = @_;
 
-	my $data = $self->client->api_get( $self->url );
+    my $data = $self->client->api_get( $self->url );
 
-	foreach my $attr ( keys( %{ $data } ) ) {
-		$self->$attr( $data->{$attr} );
-	}
+    foreach my $attr ( keys( %{ $data } ) ) {
+        $self->$attr( $data->{$attr} );
+    }
 
-	return $self;
+    return $self;
 }
 
 sub _parse_envelope_data {
@@ -108,9 +108,9 @@ sub _parse_envelope_data {
         %{ $data }
     );
 
-	foreach my $attr ( keys( %{ $Envelope->Entity // {} } ) ) {
-		$self->$attr( $Envelope->Entity->{$attr} );
-	}
+    foreach my $attr ( keys( %{ $Envelope->Entity // {} } ) ) {
+        $self->$attr( $Envelope->Entity->{$attr} );
+    }
 
     return $self;
 }

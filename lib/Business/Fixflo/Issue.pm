@@ -19,62 +19,62 @@ use Business::Fixflo::Property;
 
 =head1 ATTRIBUTES
 
-	Address
-	CallbackId
-	ContactNumber
-	Created
-	DirectEmailAddress
-	DirectMobileNumber
-	EmailAddress
-	FaultCategory
-	FaultNotes
-	FaultPriority
-	FaultTitle
-	Firstname
-	Id
-	Media
-	Property
+    Address
+    CallbackId
+    ContactNumber
+    Created
+    DirectEmailAddress
+    DirectMobileNumber
+    EmailAddress
+    FaultCategory
+    FaultNotes
+    FaultPriority
+    FaultTitle
+    Firstname
+    Id
+    Media
+    Property
     PropertyAddressId
-	Salutation
-	Status
-	StatusChanged
-	Surname
-	TenantAcceptComplete
-	TenantId
-	TenantNotes
-	TenantPresenceRequested
-	TermsAccepted
-	Title
+    Salutation
+    Status
+    StatusChanged
+    Surname
+    TenantAcceptComplete
+    TenantId
+    TenantNotes
+    TenantPresenceRequested
+    TermsAccepted
+    Title
 
 =cut
 
 has [ qw/
-	Address
-	CallbackId
-	ContactNumber
-	Created
-	DirectEmailAddress
-	DirectMobileNumber
-	EmailAddress
-	FaultCategory
-	FaultNotes
-	FaultPriority
-	FaultTitle
-	Firstname
-	Id
-	Media
-	Property
+    Address
+    CallbackId
+    ContactNumber
+    Created
+    DirectEmailAddress
+    DirectMobileNumber
+    EmailAddress
+    FaultCategory
+    FaultNotes
+    FaultPriority
+    FaultTitle
+    Firstname
+    Id
+    Media
+    Property
     PropertyAddressId
-	Salutation
-	Status
-	StatusChanged
-	Surname
-	TenantAcceptComplete
-	TenantId
-	TenantNotes
-	TenantPresenceRequested
-	TermsAccepted
-	Title
+    Salutation
+    Status
+    StatusChanged
+    Surname
+    TenantAcceptComplete
+    TenantId
+    TenantNotes
+    TenantPresenceRequested
+    TermsAccepted
+    Title
 / ] => (
     is => 'rw',
 );
@@ -90,8 +90,8 @@ Returns the report content (binary, pdf)
 =cut
 
 sub report {
-	my ( $self ) = @_;
-	return $self->client->api_get( join( '/',$self->url,'Report' ) );
+    my ( $self ) = @_;
+    return $self->client->api_get( join( '/',$self->url,'Report' ) );
 }
 
 =head2 property

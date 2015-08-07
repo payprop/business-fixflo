@@ -79,16 +79,16 @@ sub _objects_from_page {
         my $class   = $self->class;
 
         my @objects = map {
-			$class->new(
-				client => $self->client,
-				url    => $_,
-			)
-		} @{ $data->{Items} };
+            $class->new(
+                client => $self->client,
+                url    => $_,
+            )
+        } @{ $data->{Items} };
 
         $self->links({
             next     => $data->{NextURL},
             previous => $data->{PreviousURL},
-		});
+        });
 
         return [ @objects ];
     }

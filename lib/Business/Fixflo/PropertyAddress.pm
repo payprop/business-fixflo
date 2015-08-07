@@ -47,17 +47,17 @@ address:
 =cut
 
 sub get {
-	my ( $self ) = @_;
+    my ( $self ) = @_;
 
-	my $data = $self->client->api_get(
+    my $data = $self->client->api_get(
         'PropertyAddress/' . $self->Id
     );
 
-	foreach my $attr ( keys( %{ $data } ) ) {
-		$self->$attr( $data->{$attr} );
-	}
+    foreach my $attr ( keys( %{ $data } ) ) {
+        $self->$attr( $data->{$attr} );
+    }
 
-	return $self;
+    return $self;
 }
 
 sub merge {
