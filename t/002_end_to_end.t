@@ -75,6 +75,7 @@ isa_ok(
 );
 
 ok( $issue->FaultCategory,'issue populated' );
+ok( $issue->PropertyAddressId,'issue has PropertyAddressId' );
 
 cmp_deeply(
     $issue,
@@ -102,6 +103,7 @@ cmp_deeply(
             Id
             Media
             Property
+            PropertyAddressId
             Salutation
             Status
             StatusChanged

@@ -33,6 +33,8 @@ use Business::Fixflo::Property;
 	Firstname
 	Id
 	Media
+	Property
+    PropertyAddressId
 	Salutation
 	Status
 	StatusChanged
@@ -62,6 +64,7 @@ has [ qw/
 	Id
 	Media
 	Property
+    PropertyAddressId
 	Salutation
 	Status
 	StatusChanged

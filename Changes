@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.11     2015-08-07
+        - Add PropertyAddressId attribute to Issue object
+
 0.10     2015-07-03
         - Fix Property Issues and Addresses attributes to return objects,
           since calls to this endpoint return a list of json objects and

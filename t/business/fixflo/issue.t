@@ -56,6 +56,7 @@ can_ok(
 		ContactNumber
 		StatusChanged
         Property
+        PropertyAddressId
     /,
 );
 

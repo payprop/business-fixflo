@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 # VERSION
 
-0.07
+0.11
 
 # DESCRIPTION
 
@@ -88,6 +88,12 @@ appropriate error catching code (TryCatch in the below example):
         # some other failure?
         ...
     }
+
+You can view some useful debugging information by setting the FIXFLO\_DEBUG
+env varible, this will show the calls to the Fixflo endpoints as well as a
+stack trace in the event of exceptions:
+
+    $ENV{FIXFLO_DEBUG} = 1;
 
 # ATTRIBUTES
 
