@@ -56,6 +56,7 @@ no warnings 'redefine';
 
 isa_ok( $Agency->update,'Business::Fixflo::Agency','update' );
 isa_ok( $Agency->delete,'Business::Fixflo::Agency','delete' );
+isa_ok( $Agency->undelete,'Business::Fixflo::Agency','undelete' );
 
 throws_ok(
     sub { $Agency->create },

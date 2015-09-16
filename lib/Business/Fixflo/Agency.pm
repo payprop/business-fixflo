@@ -65,6 +65,11 @@ is not set
 Deletes an agency in the Fixflo API - will throw an exception if the Id
 is not set
 
+=head2 undelete
+
+Undeletes an agency in the Fixflo API - will throw an exception if the Id
+is not set
+
 =cut
 
 sub create {
@@ -91,21 +96,33 @@ sub update {
 }
 
 sub delete {
-    my ( $self ) = @_;
+    my ( $self,$undelete ) = @_;
+
+    $undelete //= 'delete';
 
     if ( ! $self->Id ) {
         Business::Fixflo::Exception->throw({
-            message  => "Can't delete Agency if Id is not set",
+            message  => "Can't $undelete Agency if Id is not set",
         });
     }
 
     $self->_parse_envelope_data(
-        $self->client->api_delete( $self->url,{ $self->to_hash } )
+        # implemented as POST rather than DELETE as DELETE with content
+        # is a contentious issue in API design (and also webservers).
+        # the fixflo API says call to DELETE Agency/{Id} should include
+        # a content body with an Id matching the Id in the URL, but they
+        # also offer delete via POST - so we are using the POST here
+        $self->client->api_post( $self->url_no_id . "/$undelete",{ $self->to_hash } )
     );
 
-    $self->IsDeleted( 1 );
+    $self->IsDeleted( $undelete eq 'undelete' ? 0 : 1 );
 
     return $self;
+}
+
+sub undelete {
+    my ( $self ) = @_;
+    return $self->delete( 'undelete' );
 }
 
 =head1 AUTHOR

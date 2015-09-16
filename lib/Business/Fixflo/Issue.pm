@@ -75,6 +75,7 @@ has [ qw/
     TenantPresenceRequested
     TermsAccepted
     Title
+    VulnerableOccupiers
 / ] => (
     is => 'rw',
 );

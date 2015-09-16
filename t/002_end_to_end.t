@@ -114,6 +114,7 @@ cmp_deeply(
             TenantPresenceRequested
             TermsAccepted
             Title
+            VulnerableOccupiers
             client
             url
         / ),
@@ -276,7 +277,10 @@ my $AlternatePropertyAddress = $property_addresses->objects->[1]->get;
 ok( $AlternatePropertyAddress->merge( $Property ),'->merge' );
 ok( $AlternatePropertyAddress->split,'->split' );
 
-my $qvps = [ $ff->quick_view_panels ];
+my $qvps = [
+    sort { $a->QVPTypeId <=> $b->QVPTypeId }
+    $ff->quick_view_panels
+];
 isa_ok( my $QVP = $qvps->[0],'Business::Fixflo::QuickViewPanel' );
 
 cmp_deeply(
@@ -432,6 +436,8 @@ cmp_deeply(
 
 ok( $agency->delete,'->delete' );
 is( $agency->IsDeleted,1,'IsDeleted' );
+ok( $agency->undelete,'->undelete' );
+is( $agency->IsDeleted,0,'! IsDeleted' );
 
 done_testing();
 

@@ -1,5 +1,10 @@
 Revision history for Business-Fixflo
 
+0.12     2015-09-16
+        - Add VulnerableOccupiers attribute to Issue object
+        - Add undelete method to Agency object
+        - Change delete method on Agency object to use POST
+
 0.11     2015-08-07
         - Add PropertyAddressId attribute to Issue object
 

@@ -24,6 +24,7 @@ can_ok(
     $Resource,
     qw/
 		url
+		url_no_id
 		to_hash
 		to_json
     /,
@@ -55,6 +56,7 @@ cmp_deeply(
     bless( {
         'client' => ignore(),
         'url'    => 'https://baz.fixflo.com/api/v2/Resource/1',
+        'url_no_id' => 'https://baz.fixflo.com/api/v2/Resource',
     }, 'Business::Fixflo::Resource' ),
     'get'
 );

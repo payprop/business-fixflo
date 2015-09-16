@@ -19,6 +19,7 @@ use JSON ();
 
     client
     url
+    url_no_id
 
 =cut
 
@@ -36,11 +37,19 @@ has [ qw/ url / ] => (
     lazy    => 1,
     default => sub {
         my ( $self ) = @_;
+        join( '/',$self->url_no_id,$self->Id )
+    },
+);
+
+has [ qw/ url_no_id / ] => (
+    is      => 'rw',
+    lazy    => 1,
+    default => sub {
+        my ( $self ) = @_;
         return join(
             '/',
             $self->client->base_url . $self->client->api_path,
             ( split( ':',ref( $self ) ) )[-1],
-            $self->Id
         );
     },
 );

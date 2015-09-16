@@ -57,6 +57,7 @@ can_ok(
 		StatusChanged
         Property
         PropertyAddressId
+        VulnerableOccupiers
     /,
 );
 
