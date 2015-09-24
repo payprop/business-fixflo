@@ -1,5 +1,10 @@
 Revision history for Business-Fixflo
 
+0.13     2015-09-24
+        - Add TermsAcceptanceUrl and TermsAcceptanceDate to Agency object
+        - Fix population of object attributes to not die if an unknown
+          attribute is encountered in the data returned from Fixflo
+
 0.12     2015-09-16
         - Add VulnerableOccupiers attribute to Issue object
         - Add undelete method to Agency object

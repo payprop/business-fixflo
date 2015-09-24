@@ -12,8 +12,9 @@ behaviour. You shouldn't use this class directly, but extend it instead.
 =cut
 
 use Moo;
-use Carp qw/ confess /;
+use Carp qw/ confess carp /;
 use JSON ();
+use Try::Tiny;
 
 =head1 ATTRIBUTES
 
@@ -80,6 +81,11 @@ the objects you are interested in) you need to call the ->get method to
 populate the attributes on an object. Really the Paginator just contains a list
 of URLs and an easy way to navigate through them.
 
+If the data returned from Fixflo contains attributes not available on the object
+then warnings will be raised for those attributes that couldn't be set - if you
+see any of these please raise an issue against the dist as these are likely due
+to updates to the Fixflo API.
+
 =cut
 
 sub to_hash {
@@ -101,7 +107,10 @@ sub get {
     my $data = $self->client->api_get( $self->url );
 
     foreach my $attr ( keys( %{ $data } ) ) {
-        $self->$attr( $data->{$attr} );
+        try { $self->$attr( $data->{$attr} ); }
+        catch {
+            carp( "Couldn't set $attr on @{[ ref( $self ) ]}: $_" );
+        };
     }
 
     return $self;
@@ -118,7 +127,10 @@ sub _parse_envelope_data {
     );
 
     foreach my $attr ( keys( %{ $Envelope->Entity // {} } ) ) {
-        $self->$attr( $Envelope->Entity->{$attr} );
+        try { $self->$attr( $Envelope->Entity->{$attr} ); }
+        catch {
+            carp( "Couldn't set $attr on @{[ ref( $self ) ]}: $_" );
+        };
     }
 
     return $self;

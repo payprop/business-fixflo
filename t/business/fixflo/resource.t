@@ -48,18 +48,31 @@ no warnings 'once';
 *Business::Fixflo::Client::api_get = sub {
 	return {
         Id => 2,
+        # this shouldn't kill the call to ->get
+        ThisDoesNotExists => 'BOOO!',
 	}
 };
 
-cmp_deeply(
-    $Resource->get,
-    bless( {
-        'client' => ignore(),
-        'url'    => 'https://baz.fixflo.com/api/v2/Resource/1',
-        'url_no_id' => 'https://baz.fixflo.com/api/v2/Resource',
-    }, 'Business::Fixflo::Resource' ),
-    'get'
-);
+{
+    local $SIG{__WARN__} = sub {
+        my ( $warning ) = @_;
+        like(
+            $warning,
+            qr/Couldn't set ThisDoesNotExists on Business::Fixflo::Resource/,
+            'unknown attribute warns, but is not fatal',
+        );
+    };
+
+    cmp_deeply(
+        $Resource->get,
+        bless( {
+            'client' => ignore(),
+            'url'    => 'https://baz.fixflo.com/api/v2/Resource/1',
+            'url_no_id' => 'https://baz.fixflo.com/api/v2/Resource',
+        }, 'Business::Fixflo::Resource' ),
+        'get'
+    );
+}
 
 isa_ok(
     $Resource->_parse_envelope_data({

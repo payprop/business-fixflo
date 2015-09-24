@@ -27,6 +27,12 @@ extends 'Business::Fixflo::Resource';
     IsDeleted
     IssueTreeRoot
     SiteBaseUrl
+    DefaultTimeZoneId
+    Locale
+    Password
+    ApiKey
+    TermsAcceptanceUrl
+    TermsAcceptanceDate
 
 =cut
 
@@ -44,6 +50,8 @@ has [ qw/
     Locale
     Password
     ApiKey
+    TermsAcceptanceUrl
+    TermsAcceptanceDate
 / ] => (
     is => 'rw',
 );

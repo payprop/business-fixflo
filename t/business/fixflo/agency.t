@@ -45,6 +45,7 @@ can_ok(
         Locale
         Password
         ApiKey
+        TermsAcceptanceUrl
     /,
 );
 
