@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.14     2015-10-21
+        - Move github repo to G3S org
+
 0.13     2015-09-24
         - Add TermsAcceptanceUrl and TermsAcceptanceDate to Agency object
         - Fix population of object attributes to not die if an unknown

@@ -12,7 +12,7 @@ A role for a fixflo version information.
 
 use Moo::Role;
 
-$Business::Fixflo::VERSION     = '0.13';
+$Business::Fixflo::VERSION     = '0.14';
 $Business::Fixflo::API_VERSION = 'v2';
 
 =head1 AUTHOR
@@ -23,7 +23,7 @@ This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself. If you would like to contribute documentation,
 features, bug fixes, or anything else then please raise an issue / pull request:
 
-    https://github.com/leejo/business-fixflo
+    https://github.com/G3S/business-fixflo
 
 =cut
 
