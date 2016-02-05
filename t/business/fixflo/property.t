@@ -60,7 +60,6 @@ like(
     ' ... with expected message'
 );
 
-
 delete( $Property->{Id} );
 ok( $Property->create,'->create when PropertyId is not set' );
 isa_ok( $Property->create,'Business::Fixflo::Property','create' );
