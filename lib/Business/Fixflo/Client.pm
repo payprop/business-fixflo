@@ -19,6 +19,7 @@ use Business::Fixflo::Exception;
 use Business::Fixflo::Paginator;
 use Business::Fixflo::Issue;
 use Business::Fixflo::IssueDraft;
+use Business::Fixflo::IssueDraftMedia;
 use Business::Fixflo::Agency;
 use Business::Fixflo::Property;
 use Business::Fixflo::PropertyAddress;

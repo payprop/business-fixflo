@@ -133,9 +133,6 @@ isa_ok(
     '->issue'
 );
 
-# TODO: coverage here for recently added objects
-my $property_id = time;
-
 isa_ok(
     my $Address = Business::Fixflo::Address->new(
         client       => $ff->client,
@@ -148,6 +145,26 @@ isa_ok(
     ),
     'Business::Fixflo::Address'
 );
+
+isa_ok(
+    my $IssueDraft = Business::Fixflo::IssueDraft->new(
+        client     => $ff->client,
+        IssueTitle => 'Bees in my house',
+        FaultNotes => 'There are bees in my house!',
+        Address    => $Address,
+    ),
+    'Business::Fixflo::IssueDraft'
+);
+
+ok( $IssueDraft->create,'->create' );
+ok( $IssueDraft->update,'->update' );
+isa_ok( my $Issue = $IssueDraft->commit,'Business::Fixflo::Issue' );
+ok( $IssueDraft->create,'->create' );
+ok( $IssueDraft->delete,'->delete' );
+
+# TODO: IssueDraftMedia
+
+my $property_id = time;
 
 isa_ok(
     my $NewProperty = Business::Fixflo::Property->new(
@@ -289,7 +306,7 @@ cmp_deeply(
         'DataTypeName' => 'IssueStatusSummary',
         'Explanation'  => 'Summarises all outstanding issues by status',
         'QVPTypeId'    => 1,
-        'Title'        => 'Overview',
+        'Title'        => 'Issue status',
         'Url'          => re( '/qvp/issue(status)?summary/\d+$' ),
         'client'       => ignore(),
     },'Business::Fixflo::QuickViewPanel' ),
@@ -370,6 +387,8 @@ cmp_deeply(
         'Locale'        => 'en-GB',
         'ApiKey'        => ignore(),
         'Password'      => ignore(),
+        'TermsAcceptanceDate' => ignore(),
+        'TermsAcceptanceUrl'  => ignore(),
         client          => ignore(),
     },'Business::Fixflo::Agency' ),
     ' ... updates object',
@@ -427,6 +446,8 @@ cmp_deeply(
             SiteBaseUrl
             DefaultTimeZoneId
             Locale
+            TermsAcceptanceDate
+            TermsAcceptanceUrl
             client
             url
         / ),
