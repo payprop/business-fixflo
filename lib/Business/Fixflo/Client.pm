@@ -20,6 +20,7 @@ use Business::Fixflo::Paginator;
 use Business::Fixflo::Issue;
 use Business::Fixflo::IssueDraft;
 use Business::Fixflo::IssueDraftMedia;
+use Business::Fixflo::Landlord;
 use Business::Fixflo::Agency;
 use Business::Fixflo::Property;
 use Business::Fixflo::PropertyAddress;
@@ -131,7 +132,6 @@ sub BUILD {
     }
 }
 
-
 sub _get_issues {
     my ( $self,$params ) = @_;
     my $issues = $self->_api_request( 'GET','Issues' );
@@ -193,6 +193,26 @@ sub _get_properties {
     return $Paginator;
 }
 
+sub _get_landlords {
+    my ( $self,$params ) = @_;
+    my $landlords = $self->_api_request( 'GET','Landlords',$params );
+
+    my $Paginator = Business::Fixflo::Paginator->new(
+        links  => {
+            next     => $landlords->{NextURL},
+            previous => $landlords->{PreviousURL},
+        },
+        client  => $self,
+        class   => 'Business::Fixflo::Landlord',
+        objects => [ map { Business::Fixflo::Landlord->new(
+            client  => $self,
+            %{ $_ },
+        ) } @{ $landlords->{Items} } ],
+    );
+
+    return $Paginator;
+}
+
 sub _get_property_addresses {
     my ( $self,$params ) = @_;
     my $property_addresses = $self->_api_request(
@@ -228,6 +248,32 @@ sub _get_issue {
     return $issue;
 }
 
+sub _get_issue_draft {
+    my ( $self,$id ) = @_;
+
+    my $data = $self->_api_request( 'GET',"IssueDraft/$id" );
+
+    my $issue_draft = Business::Fixflo::IssueDraft->new(
+        client => $self,
+        %{ $data },
+    );
+
+    return $issue_draft;
+}
+
+sub _get_issue_draft_media {
+    my ( $self,$id ) = @_;
+
+    my $data = $self->_api_request( 'GET',"IssueDraftMedia/$id" );
+
+    my $issue_draft_media = Business::Fixflo::IssueDraftMedia->new(
+        client => $self,
+        %{ $data },
+    );
+
+    return $issue_draft_media;
+}
+
 sub _get_agency {
     my ( $self,$id ) = @_;
 
@@ -256,6 +302,21 @@ sub _get_property {
     );
 
     return $property;
+}
+
+sub _get_landlord {
+    my ( $self,$id,$is_email_address ) = @_;
+
+    my $data = $is_email_address
+        ? $self->_api_request( 'GET',"Landlord?EmailAddress=$id" )
+        : $self->_api_request( 'GET',"Landlord?Id=$id" );
+
+    my $landlord = Business::Fixflo::Landlord->new(
+        client => $self,
+        %{ $data },
+    );
+
+    return $landlord;
 }
 
 sub _get_property_address {

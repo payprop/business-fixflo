@@ -77,30 +77,16 @@ Deletes the issue draft.
 sub create {
     my ( $self,$update ) = @_;
 
-    if ( ! $update && $self->Id ) {
-        Business::Fixflo::Exception->throw({
-            message  => "Can't create IssueDraft when Id is already set",
-        });
-    } elsif ( $update && ! $self->Id ) {
-        Business::Fixflo::Exception->throw({
-            message  => "Can't update IssueDraft if Id is not set",
-        });
-    }
+    $self->SUPER::_create( $update,'IssueDraft',sub {
+        my ( $self ) = @_;
 
-    $self->Id or $self->Id( 0 );
+        $self->Id or $self->Id( undef ); # force null in JSON request
 
-    my $post_data = { $self->to_hash };
-    $post_data->{Address} = { $self->Address->to_hash }
-        if $self->Address;
-
-    return $self->_parse_envelope_data(
-        $self->client->api_post( 'IssueDraft',$post_data )
-    );
-}
-
-sub update {
-    my ( $self ) = @_;
-    return $self->create( 'update' );
+        my $post_data = { $self->to_hash };
+        $post_data->{Address} = { $self->Address->to_hash }
+            if $self->Address;
+        return $post_data;
+    } );
 }
 
 sub commit {

@@ -83,24 +83,9 @@ is not set
 sub create {
     my ( $self,$update ) = @_;
 
-    if ( ! $update && $self->Id ) {
-        Business::Fixflo::Exception->throw({
-            message  => "Can't create Agency when Id is already set",
-        });
-    } elsif ( $update && ! $self->Id ) {
-        Business::Fixflo::Exception->throw({
-            message  => "Can't update Agency if Id is not set",
-        });
-    }
-
-    return $self->_parse_envelope_data(
-        $self->client->api_post( 'Agency',{ $self->to_hash } )
-    );
-}
-
-sub update {
-    my ( $self ) = @_;
-    return $self->create( 'update' );
+    $self->SUPER::_create( $update,'Agency',sub {
+        return { shift->to_hash },
+    } );
 }
 
 sub delete {

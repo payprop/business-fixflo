@@ -156,13 +156,48 @@ isa_ok(
     'Business::Fixflo::IssueDraft'
 );
 
-ok( $IssueDraft->create,'->create' );
-ok( $IssueDraft->update,'->update' );
-isa_ok( my $Issue = $IssueDraft->commit,'Business::Fixflo::Issue' );
-ok( $IssueDraft->create,'->create' );
-ok( $IssueDraft->delete,'->delete' );
+eval {
+    ok( $IssueDraft->create,'->create' );
+    ok( $IssueDraft->update,'->update' );
+    isa_ok( my $Issue = $IssueDraft->commit,'Business::Fixflo::Issue' );
+    ok( $IssueDraft->create,'->create' );
+    ok( $IssueDraft->delete,'->delete' );
+    1;
+} or do { fail( $@ ) };
 
-# TODO: IssueDraftMedia
+isa_ok(
+    my $IssueDraftMedia = Business::Fixflo::IssueDraftMedia->new(
+        client          => $ff->client,
+        ContentType     => "text/plain",
+        IssueDraftId    => 1,
+        ShortDesc       => "bees",
+        EncodedByteData => "bees",
+    ),
+    'Business::Fixflo::IssueDraftMedia'
+);
+
+eval {
+    ok( $IssueDraftMedia->create,'->create' );
+    is( $IssueDraftMedia->download,'bees','->download' );
+    ok( $IssueDraftMedia->delete,'->delete' );
+    1;
+} or do { fail( $@ ) };
+
+my $landlord_name = time;
+
+isa_ok(
+    my $Landlord = Business::Fixflo::Landlord->new(
+        client          => $ff->client,
+        CompanyName     => $landlord_name,
+    ),
+    'Business::Fixflo::Landlord'
+);
+
+eval {
+    ok( $Landlord->create,'->create' );
+    ok( $Landlord->update,'->update' );
+    1;
+} or do { fail( $@ ) };
 
 my $property_id = time;
 
@@ -245,6 +280,26 @@ isa_ok(
     my $Property = $properties->objects->[0]->get,
     'Business::Fixflo::Property',
     ' ... ->get'
+);
+
+isa_ok(
+    my $landlords = $ff->landlords(
+        Keywords => $landlord_name,
+    ),
+    'Business::Fixflo::Paginator',
+    '->landlords'
+);
+
+isa_ok(
+    $Landlord = $landlords->objects->[0]->get,
+    'Business::Fixflo::Landlord',
+    ' ... ->get'
+);
+
+isa_ok(
+    $Landlord = $ff->landlord( $Landlord->Id ),
+    'Business::Fixflo::Landlord',
+    ' ... ->landlord'
 );
 
 isa_ok(

@@ -187,15 +187,19 @@ has client => (
 
     issues
     agencies
+    landlords
     properties
     property_addresses
     issue
+    issue_draft
+    issue_draft_media
+    landlord
     agency
     property
     property_address
     quick_view_panels
 
-Get a [list of] issue(s) / agenc(y|ies) / propert(y|ies) / property address(es):
+Get a [list of] issue(s) / agenc(y|ies) / propert(y|ies) / property address(es) / landlord(s):
 
     my $paginator = $ff->issues( %query_params );
 
@@ -227,6 +231,11 @@ external reference:
 
     my $Property = $ff->property( 'P123',1 );
 
+Note the landlord method can take a flag to indicate that the passed $id is an
+email address
+
+    my $Landlord = $ff->property( 'leejo@cpan.org',1 );
+
 =cut
 
 sub issues {
@@ -244,6 +253,11 @@ sub properties {
     return $self->client->_get_properties( \%params );
 }
 
+sub landlords {
+    my ( $self,%params ) = @_;
+    return $self->client->_get_landlords( \%params );
+}
+
 sub property_addresses {
     my ( $self,%params ) = @_;
     return $self->client->_get_property_addresses( \%params );
@@ -254,6 +268,16 @@ sub issue {
     return $self->client->_get_issue( $id );
 }
 
+sub issue_draft {
+    my ( $self,$id ) = @_;
+    return $self->client->_get_issue_draft( $id );
+}
+
+sub issue_draft_media {
+    my ( $self,$id ) = @_;
+    return $self->client->_get_issue_draft_media( $id );
+}
+
 sub agency {
     my ( $self,$id ) = @_;
     return $self->client->_get_agency( $id );
@@ -262,6 +286,11 @@ sub agency {
 sub property {
     my ( $self,$id,$is_external_id ) = @_;
     return $self->client->_get_property( $id,$is_external_id );
+}
+
+sub landlord {
+    my ( $self,$id,$is_external_id ) = @_;
+    return $self->client->_get_landlord( $id,$is_external_id );
 }
 
 sub property_address {
@@ -289,6 +318,12 @@ L<Business::Fixflo::Agency>
 L<Business::Fixflo::Client>
 
 L<Business::Fixflo::Issue>
+
+L<Business::Fixflo::IssueDraft>
+
+L<Business::Fixflo::IssueDraftMedia>
+
+L<Business::Fixflo::Landlord>
 
 L<Business::Fixflo::Paginator>
 

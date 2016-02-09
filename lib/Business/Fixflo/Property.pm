@@ -12,9 +12,7 @@ A class for a fixflo property, extends L<Business::Fixflo::Resource>
 
 use Moo;
 use Business::Fixflo::Exception;
-use Business::Fixflo::Paginator;
 use Business::Fixflo::Address;
-use Business::Fixflo::PropertyAddress;
 
 extends 'Business::Fixflo::Resource';
 
@@ -63,26 +61,7 @@ has 'Addresses' => (
     is      => 'rw',
     lazy    => 1,
     default => sub {
-        my ( $self ) = @_;
-
-        my $addresses = $self->client->api_get(
-            "Property/@{[ $self->Id ]}/Addresses",
-        );
-
-        my $Paginator = Business::Fixflo::Paginator->new(
-            links  => {
-                next     => $addresses->{NextURL},
-                previous => $addresses->{PreviousURL},
-            },
-            client  => $self->client,
-            class   => 'Business::Fixflo::PropertyAddress',
-            objects => [ map { Business::Fixflo::PropertyAddress->new(
-                client => $self->client,
-                %{ $_ },
-            ) } @{ $addresses->{Items} } ],
-        );
-
-        return $Paginator;
+        shift->_paginated_items( 'Property','Addresses','PropertyAddress' );
     },
 );
 
@@ -90,26 +69,7 @@ has 'Issues' => (
     is      => 'rw',
     lazy    => 1,
     default => sub {
-        my ( $self ) = @_;
-
-        my $issues = $self->client->api_get(
-            "Property/@{[ $self->Id ]}/Issues",
-        );
-
-        my $Paginator = Business::Fixflo::Paginator->new(
-            links  => {
-                next     => $issues->{NextURL},
-                previous => $issues->{PreviousURL},
-            },
-            client  => $self->client,
-            class   => 'Business::Fixflo::Issue',
-            objects => [ map { Business::Fixflo::Issue->new(
-                client => $self->client,
-                %{ $_ },
-            ) } @{ $issues->{Items} } ],
-        );
-
-        return $Paginator;
+        shift->_paginated_items( 'Property','Issues','Issue' );
     },
 );
 
@@ -134,27 +94,16 @@ is not set
 sub create {
     my ( $self,$update ) = @_;
 
-    if ( ! $update && $self->Id ) {
-        Business::Fixflo::Exception->throw({
-            message  => "Can't create Property when Id is already set",
-        });
-    } elsif ( $update && ! $self->Id ) {
-        Business::Fixflo::Exception->throw({
-            message  => "Can't update Property if Id is not set",
-        });
-    }
+    $self->SUPER::_create( $update,'Property',sub {
+        my ( $self ) = @_;
 
-    $self->PropertyId or $self->PropertyId( 0 );
+        $self->PropertyId or $self->PropertyId( 0 );
 
-    my $post_data = { $self->to_hash };
-    $post_data->{Address} = { $post_data->{Address}->to_hash }
-        if $post_data->{Address};
-
-    # as per the Fixflo API docs - when creating a property we must POST
-    # using the PropertyId of 0 (zero, which PropertyId will default to)
-    return $self->_parse_envelope_data(
-        $self->client->api_post( 'Property',$post_data )
-    );
+        my $post_data = { $self->to_hash };
+        $post_data->{Address} = { $post_data->{Address}->to_hash }
+            if $post_data->{Address};
+        return $post_data;
+    } );
 }
 
 sub get {
@@ -170,11 +119,6 @@ sub get {
     }
 
     return $self;
-}
-
-sub update {
-    my ( $self ) = @_;
-    return $self->create( 'update' );
 }
 
 sub _params {

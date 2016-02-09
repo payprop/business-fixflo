@@ -42,10 +42,10 @@ can_ok(
 );
 
 foreach my $method ( qw/
-    issues agencies properties property_addresses quick_view_panels
+    issues agencies properties property_addresses quick_view_panels landlords
 / ) {
 
-    my @items = $method =~ /prop/
+    my @items = $method =~ /prop|land/
         ? ( { Address => {} } ) : ( qw/ url1 url2 url3 / );
 
     no warnings 'redefine';
@@ -69,6 +69,7 @@ foreach my $method ( qw/
           $method eq 'issues'     ? 'Business::Fixflo::Issue'
         : $method eq 'agencies'   ? 'Business::Fixflo::Agency'
         : $method eq 'properties' ? 'Business::Fixflo::Property'
+        : $method eq 'landlords'  ? 'Business::Fixflo::Landlord'
         : 'Business::Fixflo::PropertyAddress';
 
     cmp_deeply(
@@ -76,11 +77,11 @@ foreach my $method ( qw/
         [
             map { $class->new(
                 client => $Fixflo->client,
-                ( $method =~ /prop/
+                ( $method =~ /prop|land/
                     ? ( Address => {} )
                     : ( url     => "url" . $_ )
                 )
-            ) } ( $method =~ /prop/ ? ( 1 ) : ( 1 .. 3 ) ),
+            ) } ( $method =~ /prop|land/ ? ( 1 ) : ( 1 .. 3 ) ),
         ],
         $method,
     );
@@ -93,12 +94,17 @@ no warnings 'redefine';
 	}
 };
 
-foreach my $method ( qw/ issue agency property property_address / ) {
+foreach my $method ( qw/
+    issue agency property property_address landlord issue_draft issue_draft_media
+/ ) {
 
     my $class =
           $method eq 'issue'    ? 'Business::Fixflo::Issue'
         : $method eq 'agency'   ? 'Business::Fixflo::Agency'
         : $method eq 'property' ? 'Business::Fixflo::Property'
+        : $method eq 'landlord' ? 'Business::Fixflo::Landlord'
+        : $method eq 'issue_draft'       ? 'Business::Fixflo::IssueDraft'
+        : $method eq 'issue_draft_media' ? 'Business::Fixflo::IssueDraftMedia'
         : 'Business::Fixflo::PropertyAddress';
 
     isa_ok( my $Object = $Fixflo->$method( 1 ),$class );

@@ -54,21 +54,15 @@ Deletes the issue draft media.
 =cut
 
 sub create {
-    my ( $self ) = @_;
+    my ( $self,$update ) = @_;
 
-    if ( $self->Id ) {
-        Business::Fixflo::Exception->throw({
-            message  => "Can't create IssueDraftMedia when Id is already set",
-        });
-    }
+    $self->SUPER::_create( $update,'IssueDraftMedia',sub {
+        my ( $self ) = @_;
 
-    $self->Id or $self->Id( 0 );
+        $self->Id or $self->Id( undef ); # force null in JSON request
 
-    my $post_data = { $self->to_hash };
-
-    return $self->_parse_envelope_data(
-        $self->client->api_post( 'IssueDraftMedia',$post_data )
-    );
+        return { $self->to_hash };
+    } );
 }
 
 sub download {

@@ -15,6 +15,7 @@ use Moo;
 use Carp qw/ confess carp /;
 use JSON ();
 use Try::Tiny;
+use Business::Fixflo::Paginator;
 
 =head1 ATTRIBUTES
 
@@ -134,6 +135,56 @@ sub _parse_envelope_data {
     }
 
     return $self;
+}
+
+sub _create {
+    my ( $self,$update,$class,$cb ) = @_;
+
+    if ( ! $update && $self->Id ) {
+        Business::Fixflo::Exception->throw({
+            message  => "Can't create $class when Id is already set",
+        });
+    } elsif ( $update && ! $self->Id ) {
+        Business::Fixflo::Exception->throw({
+            message  => "Can't update $class if Id is not set",
+        });
+    }
+
+    my $post_data = $cb->( $self );
+
+    return $self->_parse_envelope_data(
+        $self->client->api_post( $class,$post_data )
+    );
+}
+
+sub _paginated_items {
+    my ( $self,$class,$item_class,$item_class_singular ) = @_;
+
+    my $items = $self->client->api_get(
+        "$class/@{[ $self->Id ]}/$item_class",
+    );
+
+    my $b_ff_class = "Business::Fixflo::$item_class_singular";
+
+    my $Paginator = Business::Fixflo::Paginator->new(
+        links  => {
+            next     => $items->{NextURL},
+            previous => $items->{PreviousURL},
+        },
+        client  => $self->client,
+        class   => 'Business::Fixflo::Issue',
+        objects => [ map { $b_ff_class->new(
+            client => $self->client,
+            %{ $_ },
+        ) } @{ $items->{Items} } ],
+    );
+
+    return $Paginator;
+}
+
+sub update {
+    my ( $self ) = @_;
+    return $self->create( 'update' );
 }
 
 =head1 AUTHOR
