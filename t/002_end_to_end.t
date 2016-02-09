@@ -193,11 +193,8 @@ isa_ok(
     'Business::Fixflo::Landlord'
 );
 
-eval {
-    ok( $Landlord->create,'->create' );
-    ok( $Landlord->update,'->update' );
-    1;
-} or do { fail( $@ ) };
+ok( $Landlord->create,'->create' );
+ok( $Landlord->update,'->update' );
 
 my $property_id = time;
 
