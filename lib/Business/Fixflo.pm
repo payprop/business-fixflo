@@ -194,12 +194,13 @@ has client => (
     issue_draft
     issue_draft_media
     landlord
+    landlord_property
     agency
     property
     property_address
     quick_view_panels
 
-Get a [list of] issue(s) / agenc(y|ies) / propert(y|ies) / property address(es) / landlord(s):
+Get a [list of] issue(s) / agenc(y|ies) / propert(y|ies) / property address(es) / landlord(s) / landlord_property:
 
     my $paginator = $ff->issues( %query_params );
 
@@ -234,7 +235,15 @@ external reference:
 Note the landlord method can take a flag to indicate that the passed $id is an
 email address
 
-    my $Landlord = $ff->property( 'leejo@cpan.org',1 );
+    my $Landlord = $ff->landlord( 'leejo@cpan.org',1 );
+
+Note the landlord_property method can take two arguments, it only one is passed
+this is taken as the LandlordPropertyId, if two arguments are passed they are
+taken as the LandlordId and the PropertyId:
+
+    my $LandlordProperty = $ff->landlord_property( $landlord_property_id );
+
+    my $LandlordProperty = $ff->landlord_property( $landlord_id,$property_id );
 
 =cut
 
@@ -293,6 +302,11 @@ sub landlord {
     return $self->client->_get_landlord( $id,$is_external_id );
 }
 
+sub landlord_property {
+    my ( $self,$id_or_landlord_id,$property_id ) = @_;
+    return $self->client->_get_landlord_property( $id_or_landlord_id,$property_id );
+}
+
 sub property_address {
     my ( $self,$id ) = @_;
     return $self->client->_get_property_address( $id );
@@ -324,6 +338,8 @@ L<Business::Fixflo::IssueDraft>
 L<Business::Fixflo::IssueDraftMedia>
 
 L<Business::Fixflo::Landlord>
+
+L<Business::Fixflo::LandlordProperty>
 
 L<Business::Fixflo::Paginator>
 

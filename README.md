@@ -127,15 +127,20 @@ you shouldn't need to pass this
 
     issues
     agencies
+    landlords
     properties
     property_addresses
     issue
+    issue_draft
+    issue_draft_media
+    landlord
+    landlord_property
     agency
     property
     property_address
     quick_view_panels
 
-Get a \[list of\] issue(s) / agenc(y|ies) / propert(y|ies) / property address(es):
+Get a \[list of\] issue(s) / agenc(y|ies) / propert(y|ies) / property address(es) / landlord(s) / landlord\_property:
 
     my $paginator = $ff->issues( %query_params );
 
@@ -167,6 +172,19 @@ external reference:
 
     my $Property = $ff->property( 'P123',1 );
 
+Note the landlord method can take a flag to indicate that the passed $id is an
+email address
+
+    my $Landlord = $ff->landlord( 'leejo@cpan.org',1 );
+
+Note the landlord\_property method can take two arguments, it only one is passed
+this is taken as the LandlordPropertyId, if two arguments are passed they are
+taken as the LandlordId and the PropertyId:
+
+    my $LandlordProperty = $ff->landlord_property( $landlord_property_id );
+
+    my $LandlordProperty = $ff->landlord_property( $landlord_id,$property_id );
+
 # EXAMPLES
 
 See the t/002\_end\_to\_end.t test included with this distribution. you can run
@@ -182,6 +200,14 @@ Fixflo credentials)
 [Business::Fixflo::Client](https://metacpan.org/pod/Business::Fixflo::Client)
 
 [Business::Fixflo::Issue](https://metacpan.org/pod/Business::Fixflo::Issue)
+
+[Business::Fixflo::IssueDraft](https://metacpan.org/pod/Business::Fixflo::IssueDraft)
+
+[Business::Fixflo::IssueDraftMedia](https://metacpan.org/pod/Business::Fixflo::IssueDraftMedia)
+
+[Business::Fixflo::Landlord](https://metacpan.org/pod/Business::Fixflo::Landlord)
+
+[Business::Fixflo::LandlordProperty](https://metacpan.org/pod/Business::Fixflo::LandlordProperty)
 
 [Business::Fixflo::Paginator](https://metacpan.org/pod/Business::Fixflo::Paginator)
 

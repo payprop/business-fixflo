@@ -194,6 +194,7 @@ isa_ok(
 );
 
 ok( $Landlord->create,'->create' );
+my $landlord_id = $Landlord->Id;
 ok( $Landlord->update,'->update' );
 
 my $property_id = time;
@@ -309,6 +310,28 @@ isa_ok(
     my $property_addresses = $ff->property_addresses,
     'Business::Fixflo::Paginator',
     '->property_addresses'
+);
+
+isa_ok(
+    my $LandlordProperty = Business::Fixflo::LandlordProperty->new(
+        client     => $ff->client,
+        LandlordId => $landlord_id,
+        PropertyId => $Property->Id,
+    ),
+    'Business::Fixflo::LandlordProperty'
+);
+
+ok( $LandlordProperty->create,'->create' );
+ok( $LandlordProperty->update,'->update' );
+
+isa_ok(
+    $ff->landlord_property( $LandlordProperty->Id ),
+    'Business::Fixflo::LandlordProperty'
+);
+
+isa_ok(
+    $ff->landlord_property( $landlord_id,$Property->Id ),
+    'Business::Fixflo::LandlordProperty'
 );
 
 cmp_deeply(

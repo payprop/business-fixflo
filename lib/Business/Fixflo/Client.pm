@@ -21,6 +21,7 @@ use Business::Fixflo::Issue;
 use Business::Fixflo::IssueDraft;
 use Business::Fixflo::IssueDraftMedia;
 use Business::Fixflo::Landlord;
+use Business::Fixflo::LandlordProperty;
 use Business::Fixflo::Agency;
 use Business::Fixflo::Property;
 use Business::Fixflo::PropertyAddress;
@@ -317,6 +318,21 @@ sub _get_landlord {
     );
 
     return $landlord;
+}
+
+sub _get_landlord_property {
+    my ( $self,$id_or_landlord_id,$property_id ) = @_;
+
+    my $data = $property_id
+        ? $self->_api_request( 'GET',"LandlordProperty?LandlordId=$id_or_landlord_id&PropertyId=$property_id" )
+        : $self->_api_request( 'GET',"Landlord?LandlordPropertyId=$id_or_landlord_id" );
+
+    my $property = Business::Fixflo::LandlordProperty->new(
+        client => $self,
+        %{ $data },
+    );
+
+    return $property;
 }
 
 sub _get_property_address {
