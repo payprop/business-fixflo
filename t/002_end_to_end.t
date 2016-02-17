@@ -18,7 +18,7 @@ plan skip_all => "FIXFLO_ENDTOEND required"
 # using the details defined in the ENV variables below. you
 # will need at least one issue (with a photo uploaded) and
 # one agency for this test to pass
-my ( $username,$password,$api_key,$domain,$tp_username,$tp_password,$server,$scheme )
+my ( $username,$password,$api_key,$domain,$tp_username,$tp_password,$server,$scheme,$url )
     = @ENV{qw/
         FIXFLO_USERNAME
         FIXFLO_PASSWORD
@@ -28,7 +28,10 @@ my ( $username,$password,$api_key,$domain,$tp_username,$tp_password,$server,$sch
         FIXFLO_3RD_PARTY_PASSWORD
         FIXFLO_TEST_SERVER
         FIXFLO_URL_SCHEME
+        FIXFLO_URL
     /};
+
+$url //= "https://$domain.$server";
 
 my $ff = Business::Fixflo->new(
     api_key       => $api_key,
@@ -63,7 +66,7 @@ cmp_deeply(
     $issues->objects->[0],
     methods(
         'client' => ignore(),
-        'url'    => re( "https://$domain.$server/api/v2/issue/[^/]+" ),
+        'url'    => re( "$url/api/v2/[iI]ssue/[^/]+" ),
     ),
     ' ... ->objects'
 );
@@ -160,7 +163,6 @@ eval {
     ok( $IssueDraft->create,'->create' );
     ok( $IssueDraft->update,'->update' );
     isa_ok( my $Issue = $IssueDraft->commit,'Business::Fixflo::Issue' );
-    ok( $IssueDraft->create,'->create' );
     ok( $IssueDraft->delete,'->delete' );
     1;
 } or do { fail( $@ ) };
@@ -218,8 +220,8 @@ cmp_deeply(
       'Address' => bless( {
         'AddressLine1' => '1 some street',
         'AddressLine2' => 'some district',
-        'Country' => '',
-        'County' => '',
+        'Country' => ignore(),
+        'County' => ignore(),
         'PostCode' => 'AB1 2CD',
         'Town' => 'some town',
         'client' => 0
@@ -229,15 +231,15 @@ cmp_deeply(
       'PropertyAddressId' => ignore(),
       'PropertyId' => 0,
       'client' => bless( {
-        'api_key' => '',
+        'api_key' => $api_key,
         'api_path' => '/api/v2',
-        'base_url' => 'https://pptestagency.test.fixflo.com',
-        'custom_domain' => 'pptestagency',
-        'password' => '8XTUmRHkQvGm9G',
-        'url_scheme' => 'https',
-        'url_suffix' => 'test.fixflo.com',
+        'base_url' => $url,
+        'custom_domain' => $domain,
+        'password' => $password,
+        'url_scheme' => $scheme ? $scheme : 'https',
+        'url_suffix' => $server ? $server : 'fixflo.com',
         'user_agent' => ignore(),
-        'username' => 'laurent@g3s.ch'
+        'username' => $username,
       }, 'Business::Fixflo::Client' )
     }, 'Business::Fixflo::Property' ),
     '->create'
@@ -269,7 +271,7 @@ cmp_deeply(
     $properties->objects->[0],
     methods(
         'client' => ignore(),
-        'url'    => re( "https://$domain.$server/api/v2/Property/[^/]+" ),
+        'url'    => re( "$url/api/v2/Property/[^/]+" ),
     ),
     ' ... ->objects'
 );
@@ -380,9 +382,9 @@ cmp_deeply(
     bless( {
         'DataTypeName' => 'IssueStatusSummary',
         'Explanation'  => 'Summarises all outstanding issues by status',
-        'QVPTypeId'    => 1,
+        'QVPTypeId'    => ignore(),
         'Title'        => 'Issue status',
-        'Url'          => re( '/qvp/issue(status)?summary/\d+$' ),
+        'Url'          => re( '(?i)/qvp/issue(status)?summary/\d+$' ),
         'client'       => ignore(),
     },'Business::Fixflo::QuickViewPanel' ),
     'QVP',
@@ -429,6 +431,7 @@ $ff = Business::Fixflo->new(
     username      => $tp_username,
     password      => $tp_password,
     url_suffix    => 'test.fixflo.com',
+    api_key       => $api_key,
 );
 
 isa_ok(
@@ -493,7 +496,7 @@ cmp_deeply(
     $agencies->objects->[0],
     methods(
         'client' => ignore(),
-        'url'    => re( "https://api.test.fixflo.com/api/v2/agency/[^/]+" ),
+        'url'    => re( "/api/v2/[Aa]gency/[^/]+" ),
     ),
     ' ... ->objects'
 );

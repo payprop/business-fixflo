@@ -37,7 +37,7 @@ can_ok(
         EmailAddress
         FaultId
         FaultNotes
-        Firstname
+        FirstName
         Id
         IssueDraftMedia
         IssueTitle

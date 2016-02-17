@@ -3,6 +3,8 @@ MANIFEST
 Makefile.PL
 README.md
 README.pod
+end_to_end_emulated.sh
+fixflo_emulator.pl
 lib/Business/Fixflo.pm
 lib/Business/Fixflo/Address.pm
 lib/Business/Fixflo/Agency.pm

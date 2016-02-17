@@ -26,7 +26,7 @@ use Business::Fixflo::Address;
     EmailAddress
     FaultId
     FaultNotes
-    Firstname
+    FirstName
     Id
     IssueDraftMedia
     IssueTitle
@@ -43,7 +43,7 @@ has [ qw/
     EmailAddress
     FaultId
     FaultNotes
-    Firstname
+    FirstName
     Id
     IssueDraftMedia
     IssueTitle
@@ -83,8 +83,13 @@ sub create {
         $self->Id or $self->Id( undef ); # force null in JSON request
 
         my $post_data = { $self->to_hash };
-        $post_data->{Address} = { $self->Address->to_hash }
-            if $self->Address;
+
+        if ( $self->Address ) {
+            $post_data->{Address} = ref( $self->Address ) eq 'HASH'
+                ? $self->Address
+                : $self->Address->to_hash;
+        }
+
         return $post_data;
     } );
 }
