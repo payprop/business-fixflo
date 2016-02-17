@@ -10,11 +10,9 @@ use Readonly;
 use FindBin qw/$Bin/;
 use lib $Bin;
 
-$ENV{MOJO_LOG_LEVEL} = 'error';
+$ENV{MOJO_LOG_LEVEL} = 'debug';
 
-Readonly my $EXPECTED_API_KEY => 'basic FixfloAPIKey';
-Readonly my $EXPECTED_BEARER  => 'Bearer FixfloAPIKey';
-Readonly my $BASE_URN         => '/api/v2';
+Readonly my $BASE_URN => '/api/v2';
 
 # 
 # emulator for Fixflo
@@ -24,8 +22,7 @@ app->hook(
 		my ( $self ) = @_;
 
 		# must have a "valid" API key
-		my $api_key = $self->req->headers->header( 'Authorization' );
-		return 1 if $api_key && ( $api_key eq $EXPECTED_API_KEY || $api_key eq $EXPECTED_BEARER );
+		return 1 if $self->req->headers->header( 'Authorization' );
 
 		$self->render( text => '', status => 401 );
 	},
@@ -143,17 +140,20 @@ get "$BASE_URN/:entity/:id/:sub_entity"
 	my $sub_entity_item = $pager_entities{ $self->param( 'sub_entity' ) }
 		|| return $self->reply->not_found;
 
+	# avoid infinite calls to $pager->next
+	my $do_next_page = rand( 10 ) > 3;
+
 	if (
 		$self->param( 'entity' ) eq 'Property'
 		&& $self->param( 'sub_entity' ) eq 'Issues'
 	) {
-		$sub_entity_item = \&_issue;
+		$sub_entity_item = \&_issue_summary;
 	}
 	
 	$self->render(
 		json   => {
 			PreviousURL => $prev ? "$uri?page=$prev" : undef,
-			NextURL     =>         "$uri?page=$next",
+			NextURL     => $do_next_page ? "$uri?page=$next" : undef,
 			Items       => [
 				map { $sub_entity_item->( $_,undef,$url ) } $start .. $end
 			],
@@ -215,7 +215,7 @@ get "/api/v2/:qvp/:panel/:id"
 	if ( $self->param( 'panel' ) ) {
 		$self->render( json => [ _qvp( $self->param( 'id' ) ) ] );
 	} else {
-		$self->render( json => [ map { _qvps( $_,undef,$url ) } 37 .. 42 ] );
+		$self->render( json => [ map { _qvps( $_,undef,$url ) } 1,37 .. 42 ] );
 	}
 };
 
@@ -302,6 +302,22 @@ sub _issue {
 		"TenantAcceptComplete" => undef,
 		"FaultPriority" => 3,
 		"TenantId" => "$id"
+	}
+}
+
+sub _issue_summary {
+	my ( $id ) = @_;
+
+	$id //= time;
+
+	return {
+		"Id" => "$id",
+		"StatusId" => "$id",
+		"Status" => "Reported",
+		"StatusChanged" => "2015-07-01T08:49:43",
+		"Created" => "2015-07-01T08:49:43",
+		"IssueTitle" => "issue title",
+		"Address" => _property( $id )->{Address},
 	}
 }
 

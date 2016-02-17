@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.16     2016-02-17
+        - Fix paginator when items are objects rather than URLs
+
 0.15     2016-02-17
         - Fix Firstname to FirstName on Business::Fixflo::IssueDraft
         - Fix calling of to_hash on Address object if not an object

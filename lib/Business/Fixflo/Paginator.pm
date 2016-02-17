@@ -81,7 +81,8 @@ sub _objects_from_page {
         my @objects = map {
             $class->new(
                 client => $self->client,
-                url    => $_,
+                # $_ might be a list of urls or list of hashes
+                ( ref( $_ ) ? ( %{ $_ } ) : ( url => $_ ) ),
             )
         } @{ $data->{Items} };
 

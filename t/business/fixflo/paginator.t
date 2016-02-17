@@ -81,6 +81,24 @@ cmp_deeply(
 	'previous returns current set of objects'
 );
 
+*Business::Fixflo::Client::api_get = sub {
+	return {
+		NextURL     => 'foo',
+		PreviousURL => 'bar',
+		Items       => [ {},{},{} ],
+	}
+};
+
+my $expected = Business::Fixflo::Issue->new( client => $Client );
+
+note explain $Paginator->next;
+
+cmp_deeply(
+	[ $Paginator->next ],
+	[ $expected,$expected,$expected ],
+	'next returns first set of objects'
+);
+
 done_testing();
 
 # vim: ts=4:sw=4:et

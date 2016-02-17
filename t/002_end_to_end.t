@@ -308,6 +308,11 @@ isa_ok(
     ' ... ->Issues'
 );
 
+lives_ok(
+    sub { $Paginator->next },
+    ' ... ->next',
+);
+
 isa_ok(
     my $property_addresses = $ff->property_addresses,
     'Business::Fixflo::Paginator',
