@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.17     2016-02-18
+        - Fix add missing files to MANIFEST
+
 0.16     2016-02-17
         - Fix paginator when items are objects rather than URLs
 
