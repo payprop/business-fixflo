@@ -20,12 +20,15 @@ use Business::Fixflo::Property;
 =head1 ATTRIBUTES
 
     Address
+    AdditionalDetails
     CallbackId
     ContactNumber
+    ContactNumberAlt
     Created
     DirectEmailAddress
     DirectMobileNumber
     EmailAddress
+    ExternalRefTenancyAgreement
     FaultCategory
     FaultNotes
     FaultPriority
@@ -50,12 +53,15 @@ use Business::Fixflo::Property;
 
 has [ qw/
     Address
+    AdditionalDetails
     CallbackId
     ContactNumber
+    ContactNumberAlt
     Created
     DirectEmailAddress
     DirectMobileNumber
     EmailAddress
+    ExternalRefTenancyAgreement
     FaultCategory
     FaultNotes
     FaultPriority

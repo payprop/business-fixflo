@@ -31,6 +31,7 @@ can_ok(
 		to_json
 		report
 
+        AdditionalDetails
 		CallbackId
 		FaultTitle
 		TermsAccepted
@@ -39,6 +40,7 @@ can_ok(
 		Id
 		Firstname
 		EmailAddress
+        ExternalRefTenancyAgreement
 		DirectEmailAddress
 		DirectMobileNumber
 		TenantId
@@ -54,6 +56,7 @@ can_ok(
 		Created
 		FaultNotes
 		ContactNumber
+        ContactNumberAlt
 		StatusChanged
         Property
         PropertyAddressId
