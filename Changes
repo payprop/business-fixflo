@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.19     2016-03-04
+        - Add request to Business::Fixflo::Exception
+
 0.18     2016-03-03
         - Add ContactNumberAlt, AdditionalDetails, and
           ExternalRefTenancyAgreement to Issue object

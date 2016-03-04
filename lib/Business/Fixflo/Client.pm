@@ -439,6 +439,12 @@ sub _api_request {
             message  => $res->content,
             code     => $res->code,
             response => $res->status_line,
+            request  => {
+                path    => $path,
+                params  => $params,
+                headers => $req->headers_as_string,
+                content => $req->content,
+            },
         });
     }
 }

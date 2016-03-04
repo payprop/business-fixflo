@@ -19,17 +19,23 @@ with 'Throwable';
 
 =head1 ATTRIBUTES
 
-=head2 message
+=head2 message (required)
 
 The error message, if JSON is passed this will be coerced to a string.
 
-=head2 code
+=head2 code (optional)
 
 The error code, generally the HTTP status code.
 
-=head2 response
+=head2 response (optional)
 
 The error response, generally the HTTP response.
+
+=head2 request (optional)
+
+The original HTTP request data including path, params, content, and headers.
+You should be careful if you write this data to a file as it may contain
+sensitive information such as API key(s).
 
 =cut
 
@@ -59,14 +65,8 @@ has message => (
     },
 );
 
-# generally the HTTP status code
-has code => (
-    is       => 'ro',
-    required => 0,
-);
-
-# generally the HTTP status code + message
-has response => (
+# HTTP status code, response, request
+has [ qw/ code response request / ] => (
     is       => 'ro',
     required => 0,
 );

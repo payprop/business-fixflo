@@ -20,6 +20,7 @@ throws_ok(
         message  => 'Boo!',
         code     => 400,
         response => '400 Bad Request',
+        request  => { foo => 'bar' },
     ) },
     'Business::Fixflo::Exception',
     '->throw with message (plain text)',
@@ -29,6 +30,7 @@ is( $@->message,'Boo!',' ... message available' );
 is( $@->description,'Boo!',' ... description available' );
 is( $@->code,'400',' ... code available' );
 is( $@->response,'400 Bad Request',' ... response available' );
+cmp_deeply( $@->request,{ foo => 'bar' },' ... request available' );
 
 note( "JSON coercion" );
 
