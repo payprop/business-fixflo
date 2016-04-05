@@ -66,9 +66,15 @@ has message => (
 );
 
 # HTTP status code, response, request
-has [ qw/ code response request / ] => (
+has [ qw/ code response / ] => (
     is       => 'ro',
     required => 0,
+);
+
+has [ qw/ request / ] => (
+    is       => 'ro',
+    required => 0,
+    default  => sub { $Business::Fixflo::Client::request_data || undef },
 );
 
 =head1 METHODS
