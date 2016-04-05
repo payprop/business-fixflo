@@ -421,6 +421,18 @@ sub _api_request {
 
     my $res = $ua->request( $req );
 
+    # work around the fact that a 200 status code can still mean a problem
+    # with the request, which we don't discover *until* we parse envelope
+    # data, at which point we have lost the request data. i can't return a
+    # list from this function as that will break backwards compatibility
+    # so instead i use a potentially evil global variable
+    $Business::Fixflo::Client::request_data = {
+        path    => $path,
+        params  => $params,
+        headers => $req->headers_as_string,
+        content => $req->content,
+    };
+
     if ( $res->is_success ) {
         my $data = $res->content;
 
@@ -439,12 +451,7 @@ sub _api_request {
             message  => $res->content,
             code     => $res->code,
             response => $res->status_line,
-            request  => {
-                path    => $path,
-                params  => $params,
-                headers => $req->headers_as_string,
-                content => $req->content,
-            },
+            request  => $Business::Fixflo::Client::request_data,
         });
     }
 }

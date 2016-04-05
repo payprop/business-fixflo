@@ -24,6 +24,10 @@ throws_ok(
     '->new throws when attributes missing'
 );
 
+$Business::Fixflo::Client::request_data = {
+    ( map { $_ => $_ } qw/ path params headers content / )
+};
+
 throws_ok(
     sub {
         my $Envelope = Business::Fixflo::Envelope->new(
@@ -47,6 +51,12 @@ like(
     $@->message,
     qr/here, is, my, error/,
     ' ... with expected message'
+);
+
+cmp_deeply(
+    $@->request,
+    { ( map { $_ => $_ } qw/ path params headers content / ) },
+    ' ... with original request'
 );
 
 isa_ok(

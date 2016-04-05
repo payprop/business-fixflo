@@ -1,5 +1,9 @@
 Revision history for Business-Fixflo
 
+0.20     2016-04-05
+        - Add request data to exception when parsing an envelope
+          that has Errors
+
 0.19     2016-03-04
         - Add request to Business::Fixflo::Exception
 

@@ -92,12 +92,15 @@ cmp_deeply(
             'Town'         => ignore(),
         },
         ( map { $_ => ignore() } qw/
+            AdditionalDetails
             CallbackId
             ContactNumber
+            ContactNumberAlt
             Created
             DirectEmailAddress
             DirectMobileNumber
             EmailAddress
+            ExternalRefTenancyAgreement
             FaultCategory
             FaultNotes
             FaultPriority

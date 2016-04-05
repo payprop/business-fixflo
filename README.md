@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 # VERSION
 
-0.19
+0.20
 
 # DESCRIPTION
 
@@ -83,6 +83,12 @@ appropriate error catching code (TryCatch in the below example):
         say $e->message;  # error message
         say $e->code;     # HTTP status code
         say $e->response; # HTTP status message
+
+        # ->request may not always be present
+        say $e->request->{path}    if $e->request
+        say $e->request->{params}  if $e->request
+        say $e->request->{headers} if $e->request
+        say $e->request->{content} if $e->request
     }
     catch ( $e ) {
         # some other failure?
