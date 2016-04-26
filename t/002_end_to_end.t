@@ -231,6 +231,7 @@ cmp_deeply(
       }, 'Business::Fixflo::Address' ),
       'ExternalPropertyRef' => "PP$property_id",
       'Id' => ignore(),
+      'KeyReference' => ignore(),
       'PropertyAddressId' => ignore(),
       'PropertyId' => 0,
       'client' => bless( {

@@ -34,6 +34,7 @@ can_ok(
         Id
         ExternalPropertyRef
         PropertyAddressId
+        KeyReference
         Address
         Addresses
         Issues

@@ -21,6 +21,7 @@ extends 'Business::Fixflo::Resource';
     Id
     ExternalPropertyRef
     PropertyAddressId
+    KeyReference
     Address
     Addresses
     Issues
@@ -33,6 +34,7 @@ has [ qw/
     Id
     ExternalPropertyRef
     PropertyAddressId
+    KeyReference
 / ] => (
     is => 'rw',
 );

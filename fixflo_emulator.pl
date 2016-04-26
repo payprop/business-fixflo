@@ -300,6 +300,9 @@ sub _issue {
 		"DirectEmailAddress" => undef,
 		"VulnerableOccupiers" => undef,
 		"TenantAcceptComplete" => undef,
+		"AdditionalDetails" => undef,
+		"ContactNumberAlt" => undef,
+		"ExternalRefTenancyAgreement" => undef,
 		"FaultPriority" => 3,
 		"TenantId" => "$id"
 	}
@@ -329,6 +332,7 @@ sub _property {
 	return {
 		"PropertyAddressId" => $id,
 		"Id" => $id,
+		"KeyReference" => 'foo',
 		"ExternalPropertyRef" => "PP60770",
 		"Address" => _address(),
 		%{ $post_data // {} },
