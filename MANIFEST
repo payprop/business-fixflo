@@ -4,7 +4,6 @@ Makefile.PL
 README.md
 README.pod
 end_to_end_emulated.sh
-examples/get_property_issues.pl
 fixflo_emulator.pl
 lib/Business/Fixflo/Address.pm
 lib/Business/Fixflo/Agency.pm

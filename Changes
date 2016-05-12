@@ -1,6 +1,9 @@
 Revision history for Business-Fixflo
 
-0.20     2016-04-26
+0.22     2016-05-12
+        - Transfer repo from G3S to Humanstate
+
+0.21     2016-04-26
         - Add to KeyReference Property object
 
 0.20     2016-04-05
