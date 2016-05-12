@@ -32,8 +32,8 @@ WriteMakefile(
         resources => {
             license    => 'http://dev.perl.org/licenses/',
             homepage   => 'https://metacpan.org/module/Business::Fixflo',
-            bugtracker => 'https://github.com/G3S/business-fixflo/issues',
-            repository => 'https://github.com/G3S/business-fixflo'
+            bugtracker => 'https://github.com/Humanstate/business-fixflo/issues',
+            repository => 'https://github.com/Humanstate/business-fixflo'
         },
     },
     test => {

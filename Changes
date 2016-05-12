@@ -26,7 +26,7 @@ Revision history for Business-Fixflo
         - Add emulator for Fixflo and end_to_end_emulated.sh
 
 0.14     2015-10-21
-        - Move github repo to G3S org
+        - Move github repo to Humanstate org
 
 0.13     2015-09-24
         - Add TermsAcceptanceUrl and TermsAcceptanceDate to Agency object
