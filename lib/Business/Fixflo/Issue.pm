@@ -10,6 +10,9 @@ A class for a fixflo issue, extends L<Business::Fixflo::Resource>
 
 =cut
 
+use strict;
+use warnings;
+
 use Moo;
 
 extends 'Business::Fixflo::Resource';

@@ -10,9 +10,12 @@ A role for a fixflo version information.
 
 =cut
 
+use strict;
+use warnings;
+
 use Moo::Role;
 
-$Business::Fixflo::VERSION     = '0.22';
+$Business::Fixflo::VERSION     = '0.23';
 $Business::Fixflo::API_VERSION = 'v2';
 
 =head1 AUTHOR

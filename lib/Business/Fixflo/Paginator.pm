@@ -10,6 +10,9 @@ A class for pagination through fixflo data returned as a list.
 
 =cut
 
+use strict;
+use warnings;
+
 use Moo;
 use JSON ();
 

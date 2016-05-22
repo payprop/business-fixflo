@@ -20,13 +20,13 @@ WriteMakefile(
         'LWP::Protocol::https' => 6.00,
         'JSON'                 => 2.90,
         'Try::Tiny'            => 0.22,
+        'DateTime::Tiny'       => 1.04,
     },
     TEST_REQUIRES => {
         'Test::Most'       => 0.31,
         'Test::Deep'       => 0.112,
         'Test::Exception'  => 0.32,
         'Test::MockObject' => 1.20140408,
-        'DateTime::Tiny'   => 1.04,
     },
     META_MERGE => {
         resources => {

@@ -10,6 +10,9 @@ A class for a fixflo agency, extends L<Business::Fixflo::Resource>
 
 =cut
 
+use strict;
+use warnings;
+
 use Moo;
 use Business::Fixflo::Exception;
 use Business::Fixflo::Envelope;

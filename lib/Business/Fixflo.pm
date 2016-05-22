@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 =head1 VERSION
 
-0.22
+0.23
 
 =head1 DESCRIPTION
 
@@ -70,9 +70,7 @@ Please note this library is a work in progress
 
 Any problems or errors will result in a Business::Fixflo::Exception
 object being thrown, so you should wrap any calls to the library in the
-appropriate error catching code (TryCatch in the below example):
-
-    use TryCatch;
+appropriate error catching code (ideally using a module from CPAN):
 
     try {
         ...
@@ -102,6 +100,9 @@ stack trace in the event of exceptions:
     $ENV{FIXFLO_DEBUG} = 1;
 
 =cut
+
+use strict;
+use warnings;
 
 use Moo;
 with 'Business::Fixflo::Version';

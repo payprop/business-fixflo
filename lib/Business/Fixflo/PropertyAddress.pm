@@ -10,6 +10,9 @@ A class for a fixflo property address, extends L<Business::Fixflo::Property>
 
 =cut
 
+use strict;
+use warnings;
+
 use Moo; 
 extends 'Business::Fixflo::Property';
 
