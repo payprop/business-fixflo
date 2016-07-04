@@ -66,11 +66,13 @@ has [ qw/
     EmailAddress
     ExternalRefTenancyAgreement
     FaultCategory
+    FaultId
     FaultNotes
     FaultPriority
     FaultTitle
     Firstname
     Id
+    Job
     Media
     Property
     PropertyAddressId

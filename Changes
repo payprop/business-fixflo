@@ -1,5 +1,11 @@
 Revision history for Business-Fixflo
 
+0.24     2016-07-04
+        - Add Job to Business::Fixflo::Issue
+        - Fix bug in setting Address data on IssueDraft
+        - Add third party details to end_to_end_emulated.sh
+        - Update end_to_end_emulated.sh to match live API
+
 0.22     2016-05-12
         - Transfer repo from G3S to Humanstate
 

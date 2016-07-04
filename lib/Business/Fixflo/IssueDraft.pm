@@ -6,7 +6,7 @@ Business::Fixflo::IssueDraft
 
 =head1 DESCRIPTION
 
-A class for a fixflo issue draft, extends L<Business::Fixflo::Resource>
+A class for a fixflo issue draft, extends L<Business::Fixflo::Issue>
 
 =cut
 
@@ -15,43 +15,23 @@ use warnings;
 
 use Moo;
 
-extends 'Business::Fixflo::Resource';
+extends 'Business::Fixflo::Issue';
 with 'Business::Fixflo::Utils';
 
 use Business::Fixflo::Address;
 
 =head1 ATTRIBUTES
 
-    Address
-    ContactNumber
-    ContactNumberAlt
     Updated
-    EmailAddress
-    FaultId
-    FaultNotes
-    FirstName
-    Id
     IssueDraftMedia
     IssueTitle
-    Surname
-    Title
 
 =cut
 
 has [ qw/
-    Address
-    ContactNumber
-    ContactNumberAlt
     Updated
-    EmailAddress
-    FaultId
-    FaultNotes
-    FirstName
-    Id
     IssueDraftMedia
     IssueTitle
-    Surname
-    Title
 / ] => (
     is => 'rw',
 );
@@ -90,7 +70,7 @@ sub create {
         if ( $self->Address ) {
             $post_data->{Address} = ref( $self->Address ) eq 'HASH'
                 ? $self->Address
-                : $self->Address->to_hash;
+                : { $self->Address->to_hash };
         }
 
         return $post_data;

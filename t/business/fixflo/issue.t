@@ -38,6 +38,7 @@ can_ok(
 		TenantNotes
 		Address
 		Id
+        Job
 		Firstname
 		EmailAddress
         ExternalRefTenancyAgreement

@@ -18,7 +18,7 @@ plan skip_all => "FIXFLO_ENDTOEND required"
 # using the details defined in the ENV variables below. you
 # will need at least one issue (with a photo uploaded) and
 # one agency for this test to pass
-my ( $username,$password,$api_key,$domain,$tp_username,$tp_password,$server,$scheme,$url )
+my ( $username,$password,$api_key,$domain,$tp_username,$tp_password,$tp_url,$server,$scheme,$url )
     = @ENV{qw/
         FIXFLO_USERNAME
         FIXFLO_PASSWORD
@@ -26,6 +26,7 @@ my ( $username,$password,$api_key,$domain,$tp_username,$tp_password,$server,$sch
         FIXFLO_CUSTOM_DOMAIN
         FIXFLO_3RD_PARTY_USERNAME
         FIXFLO_3RD_PARTY_PASSWORD
+        FIXFLO_3RD_PARTY_URL
         FIXFLO_TEST_SERVER
         FIXFLO_URL_SCHEME
         FIXFLO_URL
@@ -107,6 +108,7 @@ cmp_deeply(
             FaultTitle
             Firstname
             Id
+            Job
             Media
             Property
             PropertyAddressId
@@ -165,16 +167,35 @@ isa_ok(
 eval {
     ok( $IssueDraft->create,'->create' );
     ok( $IssueDraft->update,'->update' );
-    isa_ok( my $Issue = $IssueDraft->commit,'Business::Fixflo::Issue' );
     ok( $IssueDraft->delete,'->delete' );
+
+    $IssueDraft = Business::Fixflo::IssueDraft->new(
+        client     => $ff->client,
+        IssueTitle => 'Bees in my house',
+        FaultNotes => 'There are bees in my house!',
+        Address    => $Address,
+    );
+
+    ok( $IssueDraft->create,'->create' );
+    ok( $IssueDraft->update,'->update' );
+    isa_ok( my $Issue = $IssueDraft->commit,'Business::Fixflo::Issue' );
     1;
 } or do { fail( $@ ) };
+
+$IssueDraft = Business::Fixflo::IssueDraft->new(
+    client     => $ff->client,
+    IssueTitle => 'Bees in my house',
+    FaultNotes => 'There are bees in my house!',
+    Address    => $Address,
+);
+
+ok( $IssueDraft->create,'->create' );
 
 isa_ok(
     my $IssueDraftMedia = Business::Fixflo::IssueDraftMedia->new(
         client          => $ff->client,
         ContentType     => "text/plain",
-        IssueDraftId    => 1,
+        IssueDraftId    => $IssueDraft->Id,
         ShortDesc       => "bees",
         EncodedByteData => "bees",
     ),
@@ -183,8 +204,9 @@ isa_ok(
 
 eval {
     ok( $IssueDraftMedia->create,'->create' );
-    is( $IssueDraftMedia->download,'bees','->download' );
+    ok( $IssueDraftMedia->download,'->download' );
     ok( $IssueDraftMedia->delete,'->delete' );
+    ok( $IssueDraft->delete,'->delete IssueDraft' );
     1;
 } or do { fail( $@ ) };
 
@@ -390,7 +412,7 @@ cmp_deeply(
     $QVP,
     bless( {
         'DataTypeName' => 'IssueStatusSummary',
-        'Explanation'  => 'Summarises all outstanding issues by status',
+        'Explanation'  => 'Summarises all open issues by status',
         'QVPTypeId'    => ignore(),
         'Title'        => 'Issue status',
         'Url'          => re( '(?i)/qvp/issue(status)?summary/\d+$' ),
@@ -435,12 +457,14 @@ cmp_deeply(
     'key_value_pairs',
 );
 
+# now we hit the third party url
+$ENV{FIXFLO_URL} = $tp_url;
+
 # to create/update/delete agencies we need to use the third party api
 $ff = Business::Fixflo->new(
     username      => $tp_username,
     password      => $tp_password,
-    url_suffix    => 'test.fixflo.com',
-    api_key       => $api_key,
+    url_suffix    => $tp_url,
 );
 
 isa_ok(

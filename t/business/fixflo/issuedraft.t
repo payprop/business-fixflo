@@ -22,6 +22,9 @@ isa_ok(
     'Business::Fixflo::IssueDraft'
 );
 
+# extends Issue
+isa_ok( $IssueDraft,'Business::Fixflo::Issue' );
+
 can_ok(
     $IssueDraft,
     qw/
@@ -37,7 +40,7 @@ can_ok(
         EmailAddress
         FaultId
         FaultNotes
-        FirstName
+        Firstname
         Id
         IssueDraftMedia
         IssueTitle

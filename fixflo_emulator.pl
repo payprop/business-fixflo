@@ -304,7 +304,8 @@ sub _issue {
 		"ContactNumberAlt" => undef,
 		"ExternalRefTenancyAgreement" => undef,
 		"FaultPriority" => 3,
-		"TenantId" => "$id"
+		"TenantId" => "$id",
+		"Job" => undef,
 	}
 }
 
@@ -442,7 +443,7 @@ sub _qvps {
 
 	return {
 		'DataTypeName' => 'IssueStatusSummary',
-		'Explanation'  => 'Summarises all outstanding issues by status',
+		'Explanation'  => 'Summarises all open issues by status',
 		'QVPTypeId'    => $id,
 		'Title'        => 'Issue status',
 		'Url'          => "$url/api/v2/QVP/IssueStatusSummary/$id",
