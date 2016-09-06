@@ -25,6 +25,8 @@ use Business::Fixflo::Address;
     Updated
     IssueDraftMedia
     IssueTitle
+    FirstName # note inconsistent with Issue (Firstname)
+              # however Firstname will be set using an around modifier
 
 =cut
 
@@ -32,6 +34,9 @@ has [ qw/
     Updated
     IssueDraftMedia
     IssueTitle
+    PropertyId
+    ExternalPropertyRef
+    FirstName
 / ] => (
     is => 'rw',
 );
@@ -56,6 +61,15 @@ Commits the issue draft, returning a Business::Fixflo::Issue object
 Deletes the issue draft.
 
 =cut
+
+# IssueDraft has Firstname, whereas Issue has Firstname, so let's set
+# Firstname whenever FirstName is set so we can just use Firstname as
+# an accessor to be consistent
+after FirstName => sub {
+    my ( $self,$value ) = @_;
+    $self->Firstname( $value );
+    return;
+};
 
 sub create {
     my ( $self,$update ) = @_;

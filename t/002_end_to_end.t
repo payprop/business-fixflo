@@ -106,6 +106,7 @@ cmp_deeply(
             FaultNotes
             FaultPriority
             FaultTitle
+            FaultTree
             Firstname
             Id
             Job

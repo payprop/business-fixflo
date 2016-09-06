@@ -31,17 +31,21 @@ use Business::Fixflo::Property;
     DirectEmailAddress
     DirectMobileNumber
     EmailAddress
+    ExternalPropertyRef
     ExternalRefTenancyAgreement
     FaultCategory
     FaultNotes
     FaultPriority
     FaultTitle
+    FaultTree
     Firstname
     Id
     Media
     Property
+    PropertyId
     PropertyAddressId
     Salutation
+    SearchStatus
     Status
     StatusChanged
     Surname
@@ -70,6 +74,7 @@ has [ qw/
     FaultNotes
     FaultPriority
     FaultTitle
+    FaultTree
     Firstname
     Id
     Job
@@ -77,6 +82,7 @@ has [ qw/
     Property
     PropertyAddressId
     Salutation
+    SearchStatus
     Status
     StatusChanged
     Surname

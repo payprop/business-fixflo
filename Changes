@@ -1,5 +1,14 @@
 Revision history for Business-Fixflo
 
+0.25     2016-09-06
+        - Add FaultTree to Business::Fixflo::Issue
+        - Add SearchStatus to Business::Fixflo::Issue
+        - Add PropertyId to Business::Fixflo::Issue
+        - Add ExternalPropertyRef to Business::Fixflo::Issue
+        - Fix inconsistency between Firstname and FirstName on
+          Business::Fixflo::IssueDraft by adding around modifier
+          to set Firstname on B::F::IssueDraft
+
 0.24     2016-07-04
         - Add Job to Business::Fixflo::Issue
         - Fix bug in setting Address data on IssueDraft

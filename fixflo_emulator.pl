@@ -260,7 +260,7 @@ sub _issue_draft {
 		"FaultId" => 0,
 		"FaultNotes" => "Rabbit",
 		"IssueDraftMedia" => [],
-		"FirstName" => "f",
+		"FirstName" => "f", # note inconsistent with Issue (Firstname)
 		"Surname" => "g",
 		"EmailAddress" => "samuel\@givengain.com",
 		"ContactNumber" => "i",
@@ -276,7 +276,7 @@ sub _issue {
 
 	return {
 		"ContactNumber" => "i",
-		"Firstname" => "f",
+		"Firstname" => "f", # note inconsistent with IssueDraft (FirstName)
 		"Status" => "Reported",
 		"Id" => "$id",
 		"Salutation" => "e",
@@ -291,6 +291,7 @@ sub _issue {
 		"EmailAddress" => "samuel\@givengain.com",
 		"Title" => "Other (Rodents)",
 		"FaultTitle" => undef,
+		"FaultTree" => undef,
 		"TenantPresenceRequested" => Mojo::JSON->false,
 		"PropertyAddressId" => $id,
 		"Surname" => "g",

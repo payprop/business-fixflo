@@ -40,7 +40,7 @@ can_ok(
         EmailAddress
         FaultId
         FaultNotes
-        Firstname
+        FirstName
         Id
         IssueDraftMedia
         IssueTitle
@@ -108,6 +108,9 @@ isa_ok(
 
 *Business::Fixflo::Client::api_post = sub { 'deleted' };
 isa_ok( $IssueDraft->delete,'Business::Fixflo::IssueDraft','->delete' );
+
+ok( $IssueDraft->FirstName( "new_first_name" ),'FirstName' );
+is( $IssueDraft->Firstname,"new_first_name",' ... sets Firstname' );
 
 done_testing();
 
