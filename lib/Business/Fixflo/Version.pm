@@ -15,7 +15,7 @@ use warnings;
 
 use Moo::Role;
 
-$Business::Fixflo::VERSION     = '0.25';
+$Business::Fixflo::VERSION     = '0.26';
 $Business::Fixflo::API_VERSION = 'v2';
 
 =head1 AUTHOR

@@ -55,6 +55,8 @@ use Business::Fixflo::Property;
     TenantPresenceRequested
     TermsAccepted
     Title
+    WorksAuthorisationLimit
+    VulnerableOccupiers
 
 =cut
 
@@ -92,6 +94,7 @@ has [ qw/
     TenantPresenceRequested
     TermsAccepted
     Title
+    WorksAuthorisationLimit
     VulnerableOccupiers
 / ] => (
     is => 'rw',

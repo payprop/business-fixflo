@@ -14,6 +14,8 @@ use strict;
 use warnings;
 
 use Moo;
+use Try::Tiny;
+use Carp qw/ carp /;
 use Business::Fixflo::Exception;
 use Business::Fixflo::Address;
 
@@ -22,12 +24,14 @@ extends 'Business::Fixflo::Resource';
 =head1 ATTRIBUTES
 
     Id
+    Created
     ExternalPropertyRef
     PropertyAddressId
     KeyReference
     Address
     Addresses
     Issues
+    UpdateDate
 
 =cut
 
@@ -35,9 +39,11 @@ use Carp qw/ confess /;
 
 has [ qw/
     Id
+    Created
     ExternalPropertyRef
     PropertyAddressId
     KeyReference
+    UpdateDate
 / ] => (
     is => 'rw',
 );
@@ -120,7 +126,10 @@ sub get {
     );
 
     foreach my $attr ( keys( %{ $data } ) ) {
-        $self->$attr( $data->{$attr} );
+        try { $self->$attr( $data->{$attr} ); }
+        catch {
+            carp( "Couldn't set $attr on @{[ ref( $self ) ]}: $_" );
+        };
     }
 
     return $self;

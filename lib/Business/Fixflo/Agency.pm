@@ -36,6 +36,7 @@ extends 'Business::Fixflo::Resource';
     ApiKey
     TermsAcceptanceUrl
     TermsAcceptanceDate
+    UpdateDate
 
 =cut
 
@@ -55,6 +56,7 @@ has [ qw/
     ApiKey
     TermsAcceptanceUrl
     TermsAcceptanceDate
+    UpdateDate
 / ] => (
     is => 'rw',
 );

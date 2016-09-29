@@ -123,6 +123,7 @@ cmp_deeply(
             TenantPresenceRequested
             TermsAccepted
             Title
+            WorksAuthorisationLimit
             VulnerableOccupiers
             client
             url
@@ -255,6 +256,8 @@ cmp_deeply(
       'ExternalPropertyRef' => "PP$property_id",
       'Id' => ignore(),
       'KeyReference' => ignore(),
+      'UpdateDate' => ignore(),
+      'Created' => ignore(),
       'PropertyAddressId' => ignore(),
       'PropertyId' => 0,
       'client' => bless( {
@@ -501,6 +504,7 @@ cmp_deeply(
         'Password'      => ignore(),
         'TermsAcceptanceDate' => ignore(),
         'TermsAcceptanceUrl'  => ignore(),
+        'UpdateDate'    => ignore(),
         client          => ignore(),
     },'Business::Fixflo::Agency' ),
     ' ... updates object',
@@ -560,6 +564,7 @@ cmp_deeply(
             Locale
             TermsAcceptanceDate
             TermsAcceptanceUrl
+            UpdateDate
             client
             url
         / ),

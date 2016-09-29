@@ -303,6 +303,7 @@ sub _issue {
 		"TenantAcceptComplete" => undef,
 		"AdditionalDetails" => undef,
 		"ContactNumberAlt" => undef,
+		"WorksAuthorisationLimit" => undef,
 		"ExternalRefTenancyAgreement" => undef,
 		"FaultPriority" => 3,
 		"TenantId" => "$id",
@@ -337,6 +338,8 @@ sub _property {
 		"KeyReference" => 'foo',
 		"ExternalPropertyRef" => "PP60770",
 		"Address" => _address(),
+		"Created" => "",
+		"UpdateDate" => "",
 		%{ $post_data // {} },
 	};
 }
@@ -423,6 +426,7 @@ sub _agency {
 		ApiKey => '',
 		TermsAcceptanceDate => '',
 		TermsAcceptanceUrl => '',
+		UpdateDate => '',
 		%{ $post_data // {} },
 	}
 }

@@ -16,6 +16,8 @@ use warnings;
 use Moo; 
 extends 'Business::Fixflo::Property';
 
+use Try::Tiny;
+use Carp qw/ carp /;
 use Business::Fixflo::Property;
 use Business::Fixflo::Address;
 use Business::Fixflo::Exception;
@@ -57,7 +59,10 @@ sub get {
     );
 
     foreach my $attr ( keys( %{ $data } ) ) {
-        $self->$attr( $data->{$attr} );
+        try { $self->$attr( $data->{$attr} ); }
+        catch {
+            carp( "Couldn't set $attr on @{[ ref( $self ) ]}: $_" );
+        };
     }
 
     return $self;

@@ -33,6 +33,7 @@ extends 'Business::Fixflo::Resource';
     EmailCC
     IsDeleted
     ExternalRef
+    UpdateDate
 
 =cut
 
@@ -52,6 +53,7 @@ has [ qw/
     EmailCC
     IsDeleted
     ExternalRef
+    UpdateDate
 / ] => (
     is => 'rw',
 );
