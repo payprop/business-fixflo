@@ -24,10 +24,12 @@ use Business::Fixflo::Issue;
     objects
     class
     links
+	total_items
+	total_pages
 
 =cut
 
-has [ qw/ client objects class links / ] => (
+has [ qw/ client objects class links total_items total_pages / ] => (
     is => 'rw'
 );
 
@@ -38,13 +40,13 @@ has [ qw/ client objects class links / ] => (
 
 Return the current set of objects and then gets the next/previous page:
 
-    my @objects = $Paginator->next;
+    my @objects = @{ $Paginator->next };
 
 =head2 objects
 
 Gets the current set of objects
 
-    my @objects = $Paginator->objects;
+    my @objects = @{ $Paginator->objects };
 
 =head2 links
 
@@ -60,7 +62,7 @@ sub next {
     if ( my @objects = @{ $self->objects // [] } ) {
         # get the next chunk and return the current chunk
         $self->objects( $self->_objects_from_page( 'next' ) );
-        return @objects;
+        return [ @objects ];
     }
 
     return;
@@ -68,7 +70,7 @@ sub next {
 
 sub previous {
     my ( $self ) = @_;
-    return @{ $self->_objects_from_page( 'previous' ) };
+    return $self->_objects_from_page( 'previous' );
 }
 
 sub _objects_from_page {

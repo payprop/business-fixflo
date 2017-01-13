@@ -54,13 +54,13 @@ can_ok(
 );
 
 cmp_deeply(
-	[ $Paginator->next ],
+	$Paginator->next,
 	[ qw/ foo bar baz / ],
 	'next returns first set of objects'
 );
 
 cmp_deeply(
-	[ $Paginator->next ],
+	$Paginator->next,
 	[
 		map { Business::Fixflo::Issue->new(
 			client => $Client,
@@ -71,7 +71,7 @@ cmp_deeply(
 );
 
 cmp_deeply(
-	[ $Paginator->previous ],
+	$Paginator->previous,
 	[
 		map { Business::Fixflo::Issue->new(
 			client => $Client,
@@ -94,7 +94,7 @@ my $expected = Business::Fixflo::Issue->new( client => $Client );
 note explain $Paginator->next;
 
 cmp_deeply(
-	[ $Paginator->next ],
+	$Paginator->next,
 	[ $expected,$expected,$expected ],
 	'next returns first set of objects'
 );

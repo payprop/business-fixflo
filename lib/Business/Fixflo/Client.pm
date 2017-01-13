@@ -138,19 +138,35 @@ sub BUILD {
 
 sub _get_issues {
     my ( $self,$params ) = @_;
-    my $issues = $self->_api_request( 'GET','Issues' );
+
+    return $self->_get_paginator_items(
+		$params,'Issues','Business::Fixflo::Issue',
+	);
+}
+
+sub _get_paginator_items {
+    my ( $self,$params,$uri,$class ) = @_;
+
+    my $items = $self->_api_request( 'GET',$uri );
 
     my $Paginator = Business::Fixflo::Paginator->new(
+        total_items => $items->{TotalItems},
+        total_pages => $items->{TotalPages},
         links  => {
-            next     => $issues->{NextURL},
-            previous => $issues->{PreviousURL},
+            next     => $items->{NextURL},
+            previous => $items->{PreviousURL},
         },
         client  => $self,
-        class   => 'Business::Fixflo::Issue',
-        objects => [ map { Business::Fixflo::Issue->new(
+        class   => $class,
+        objects => [ map { $class->new(
             client => $self,
-            url    => $_,
-        ) } @{ $issues->{Items} } ],
+            ( $uri eq 'Property/Search'
+				? ( Address => delete( $_->{Address} ),%{ $_ } )
+				: $uri =~ /Landlords|PropertyAddress/
+					? ( %{ $_ } ) 
+					: ( url => $_ ),
+			),
+        ) } @{ $items->{Items} } ],
     );
 
     return $Paginator;
@@ -158,85 +174,34 @@ sub _get_issues {
 
 sub _get_agencies {
     my ( $self,$params ) = @_;
-    my $agencies = $self->_api_request( 'GET','Agencies' );
 
-    my $Paginator = Business::Fixflo::Paginator->new(
-        links  => {
-            next     => $agencies->{NextURL},
-            previous => $agencies->{PreviousURL},
-        },
-        client  => $self,
-        class   => 'Business::Fixflo::Agency',
-        objects => [ map { Business::Fixflo::Agency->new(
-            client => $self,
-            url    => $_,
-        ) } @{ $agencies->{Items} } ],
-    );
-
-    return $Paginator;
+    return $self->_get_paginator_items(
+		$params,'Agencies','Business::Fixflo::Agency',
+	);
 }
 
 sub _get_properties {
     my ( $self,$params ) = @_;
-    my $properties = $self->_api_request( 'GET','Property/Search',$params );
 
-    my $Paginator = Business::Fixflo::Paginator->new(
-        links  => {
-            next     => $properties->{NextURL},
-            previous => $properties->{PreviousURL},
-        },
-        client  => $self,
-        class   => 'Business::Fixflo::Property',
-        objects => [ map { Business::Fixflo::Property->new(
-            client  => $self,
-            Address => delete( $_->{Address} ),
-            %{ $_ },
-        ) } @{ $properties->{Items} } ],
-    );
-
-    return $Paginator;
+    return $self->_get_paginator_items(
+		$params,'Property/Search','Business::Fixflo::Property',
+	);
 }
 
 sub _get_landlords {
     my ( $self,$params ) = @_;
-    my $landlords = $self->_api_request( 'GET','Landlords',$params );
 
-    my $Paginator = Business::Fixflo::Paginator->new(
-        links  => {
-            next     => $landlords->{NextURL},
-            previous => $landlords->{PreviousURL},
-        },
-        client  => $self,
-        class   => 'Business::Fixflo::Landlord',
-        objects => [ map { Business::Fixflo::Landlord->new(
-            client  => $self,
-            %{ $_ },
-        ) } @{ $landlords->{Items} } ],
-    );
-
-    return $Paginator;
+    return $self->_get_paginator_items(
+		$params,'Landlords','Business::Fixflo::Landlord',
+	);
 }
 
 sub _get_property_addresses {
     my ( $self,$params ) = @_;
-    my $property_addresses = $self->_api_request(
-        'GET','PropertyAddress/Search',$params
-    );
 
-    my $Paginator = Business::Fixflo::Paginator->new(
-        links  => {
-            next     => $property_addresses->{NextURL},
-            previous => $property_addresses->{PreviousURL},
-        },
-        client  => $self,
-        class   => 'Business::Fixflo::PropertyAddress',
-        objects => [ map { Business::Fixflo::PropertyAddress->new(
-            client  => $self,
-            %{ $_ },
-        ) } @{ $property_addresses->{Items} } ],
-    );
-
-    return $Paginator;
+    return $self->_get_paginator_items(
+		$params,'PropertyAddress/Search','Business::Fixflo::PropertyAddress',
+	);
 }
 
 sub _get_issue {

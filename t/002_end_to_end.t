@@ -52,6 +52,8 @@ isa_ok(
 cmp_deeply(
     $issues,
     bless({
+        'total_items' => ignore(),
+        'total_pages' => ignore(),
         'class'  => 'Business::Fixflo::Issue',
         'client' => ignore(),
         'links' => {
@@ -286,6 +288,8 @@ isa_ok(
 cmp_deeply(
     $properties,
     bless({
+        'total_items' => ignore(),
+        'total_pages' => ignore(),
         'class'  => 'Business::Fixflo::Property',
         'client' => ignore(),
         'links' => {
@@ -374,6 +378,8 @@ isa_ok(
 cmp_deeply(
     $property_addresses,
     bless({
+        'total_items' => ignore(),
+        'total_pages' => ignore(),
         'class'  => 'Business::Fixflo::PropertyAddress',
         'client' => ignore(),
         'links' => {
@@ -519,6 +525,8 @@ isa_ok(
 cmp_deeply(
     $agencies,
     bless( {
+        'total_items' => ignore(),
+        'total_pages' => ignore(),
         'class' => 'Business::Fixflo::Agency',
         'client' => ignore(),
         'links' => {

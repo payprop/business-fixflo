@@ -41,7 +41,7 @@ Please note this library is a work in progress
     my $issues   = $ff->issues,
     my $agencies = $ff->agencies,
 
-    while ( my @issues = $issues->next ) {
+    while ( my @issues = @{ $issues->next // [] } ) {
         foreach my $issue ( @issues ) {
             $issue->get;
             ...
