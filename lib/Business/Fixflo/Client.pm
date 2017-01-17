@@ -150,8 +150,8 @@ sub _get_paginator_items {
     my $items = $self->_api_request( 'GET',$uri );
 
     my $Paginator = Business::Fixflo::Paginator->new(
-        total_items => $items->{TotalItems},
-        total_pages => $items->{TotalPages},
+        total_items => $items->{TotalItems} // undef,
+        total_pages => $items->{TotalPages} // undef,
         links  => {
             next     => $items->{NextURL},
             previous => $items->{PreviousURL},

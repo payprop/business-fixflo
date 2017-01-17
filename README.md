@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 # VERSION
 
-0.26
+0.27
 
 # DESCRIPTION
 
@@ -41,7 +41,7 @@ Please note this library is a work in progress
     my $issues   = $ff->issues,
     my $agencies = $ff->agencies,
 
-    while ( my @issues = $issues->next ) {
+    while ( my @issues = @{ $issues->next // [] } ) {
         foreach my $issue ( @issues ) {
             $issue->get;
             ...

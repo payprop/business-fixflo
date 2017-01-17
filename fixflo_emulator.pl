@@ -89,13 +89,15 @@ get "$BASE_URN/:entity"
 	my $entity_item = $pager_entities{ $self->param( 'entity' ) }
 		|| return $self->reply->not_found;
 	
+	my @items = map { $entity_item->( $_,undef,$url ) } $start .. $end;
+
 	$self->render(
 		json   => {
 			PreviousURL => $prev ? "$uri?page=$prev" : undef,
 			NextURL     =>         "$uri?page=$next",
-			Items       => [
-				map { $entity_item->( $_,undef,$url ) } $start .. $end
-			],
+			TotalItems  => scalar( @items ) * $next,
+			TotalPages  => $next,
+			Items       => [ @items ],
 		}
 	);
 };
@@ -150,13 +152,16 @@ get "$BASE_URN/:entity/:id/:sub_entity"
 		$sub_entity_item = \&_issue_summary;
 	}
 	
+	my @items = map { $sub_entity_item->( $_,undef,$url ) } $start .. $end;
+	my $total_pages = $do_next_page ? $next : $prev + 1;
+
 	$self->render(
 		json   => {
 			PreviousURL => $prev ? "$uri?page=$prev" : undef,
 			NextURL     => $do_next_page ? "$uri?page=$next" : undef,
-			Items       => [
-				map { $sub_entity_item->( $_,undef,$url ) } $start .. $end
-			],
+			TotalPages  => $total_pages,
+			TotalItems  => scalar( @items ) * $total_pages,
+			Items       => [ @items ],
 		}
 	);
 };
@@ -461,8 +466,31 @@ sub _qvp {
 	if ( $id == 40 ) {
 		return {
 			Key   => 'weeee',
-			Value => 'woooo',
+			Value => '123',
 		}
+	}
+
+	if ( $id == 41 ) {
+
+		return ( map {
+			{
+			  "Id" => "$_",
+			  "IssueId" => "$_",
+			  "StatusId" => 16,
+			  "Status" => "Closed",
+			  "StatusChanged" => "2017-01-12T11:01:54",
+			  "Created" => "2017-01-11T20:49:35",
+			  "IssueTitle" => "Tumble dryer does not work correctly (Tumble dryer)",
+			  "Address" => {
+				"AddressLine1" => "11 Egerton",
+				"AddressLine2" => "Fallowfield",
+				"Town" => "Manchester",
+				"County" => "",
+				"PostCode" => "M14 6YD",
+				"Country" => ""
+			  }
+			}
+		} 1 .. 5 );
 	}
 
 	return {
