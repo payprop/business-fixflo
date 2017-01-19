@@ -147,7 +147,7 @@ sub _get_issues {
 sub _get_paginator_items {
     my ( $self,$params,$uri,$class ) = @_;
 
-    my $items = $self->_api_request( 'GET',$uri );
+    my $items = $self->_api_request( 'GET',$uri,$params );
 
     my $Paginator = Business::Fixflo::Paginator->new(
         total_items => $items->{TotalItems} // undef,

@@ -1,5 +1,8 @@
 Revision history for Business-Fixflo
 
+0.28     2017-10-19
+        - Fix passing through of params when calling pager methods
+
 0.27     2017-10-17
         - Add total_items and total_pages attributes to the
           Business::Fixflo::Paginator object

@@ -11,7 +11,7 @@ Business::Fixflo - Perl library for interacting with the Fixflo API
 
 # VERSION
 
-0.27
+0.28
 
 # DESCRIPTION
 
