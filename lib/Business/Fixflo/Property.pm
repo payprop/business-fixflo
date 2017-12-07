@@ -24,6 +24,7 @@ extends 'Business::Fixflo::Resource';
 =head1 ATTRIBUTES
 
     Id
+    BlockId
     Created
     ExternalPropertyRef
     PropertyAddressId
@@ -39,6 +40,7 @@ use Carp qw/ confess /;
 
 has [ qw/
     Id
+    BlockId
     Created
     ExternalPropertyRef
     PropertyAddressId
