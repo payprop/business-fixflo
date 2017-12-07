@@ -25,6 +25,7 @@ extends 'Business::Fixflo::Resource';
 
     Id
     BlockId
+    BlockName
     Created
     ExternalPropertyRef
     PropertyAddressId
@@ -41,6 +42,7 @@ use Carp qw/ confess /;
 has [ qw/
     Id
     BlockId
+    BlockName
     Created
     ExternalPropertyRef
     PropertyAddressId

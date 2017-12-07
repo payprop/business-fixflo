@@ -33,6 +33,7 @@ can_ok(
 
         Id
         BlockId
+        BlockName
         ExternalPropertyRef
         PropertyAddressId
         KeyReference
