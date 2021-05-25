@@ -75,6 +75,22 @@ The version of the Fixflo API to use, defaults to:
 
     /api/$Business::Fixflo::API_VERSION
 
+=head2 ua_proxy_settings 
+
+The custom proxy settings for the user agent class
+The format is identical to LWP::UserAgent::proxy
+
+    my $ff = Business::Fixflo->new( ... );
+
+    $ff->client->ua_proxy_settings(
+        [
+            ftp => 'http://ftp.example.com:8001/',
+	    [ 'http', 'https' ] => 'http://http.example.com:8001/',
+	]
+    );
+
+
+
 =cut
 
 has [ qw/ custom_domain / ] => (
@@ -125,6 +141,13 @@ has api_path => (
     required => 0,
     default  => sub { '/api/' . $Business::Fixflo::API_VERSION },
 );
+
+has ua_proxy_settings => (
+   is => 'rw',
+   required => 0,
+   default => sub { [] },
+);
+
 
 sub BUILD {
     my ( $self ) = @_;
@@ -386,6 +409,10 @@ sub _api_request {
             carp( $req->content )
                 if $ENV{FIXFLO_DEBUG};
         }
+    }
+
+    if (ref($self->ua_proxy_settings) eq 'ARRAY' && @$self->ua_proxy_settings > 0) {
+	$ua->proxy($self->ua_proxy_settings);
     }
 
     my $res = $ua->request( $req );
