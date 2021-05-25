@@ -143,9 +143,13 @@ has api_path => (
 );
 
 has ua_proxy_settings => (
-   is => 'rw',
-   required => 0,
-   default => sub { [] },
+    is       => 'rw',
+    isa => sub {
+        confess( "$_[0] is not an ARRAY ref" )
+            if ref $_[0] ne 'ARRAY';
+    },
+    required => 0,
+    default  => sub { [] },
 );
 
 
@@ -411,8 +415,8 @@ sub _api_request {
         }
     }
 
-    if (ref($self->ua_proxy_settings) eq 'ARRAY' && @$self->ua_proxy_settings > 0) {
-	$ua->proxy($self->ua_proxy_settings);
+    if ( @{ $self->ua_proxy_settings } ) {
+        $ua->proxy( $self->ua_proxy_settings );
     }
 
     my $res = $ua->request( $req );
